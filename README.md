@@ -8,7 +8,20 @@ This GNOME Extension lets users to quickly view and select the preset they want 
 
 ![Extension](./screenshots/screenshot.png)
 
-## Dependencies
+## Installation
+
+- Clone the repository:
+```
+git clone https://github.com/ulville/eepresetselector.git
+```
+- Copy `eepresetselector@ulville.github.io` directory to `~/.local/share/gnome-shell/extensions/`
+```
+cp -r eepresetselector/eepresetselector@ulville.github.io ~/.local/share/gnome-shell/extensions/
+```
+- Log out and login.
+- Enable the extension from GNOME Extensions app.
+
+### Dependencies
 
 This Extension depends on EasyEffects to function. It makes use of command-line options `easyeffects -p` and `easyeffects -l`.
 
