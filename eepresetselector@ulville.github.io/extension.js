@@ -55,15 +55,14 @@ const EEPSIndicator = GObject.registerClass(
             try {
                 GLib.spawn_command_line_async("easyeffects -l " + preset);
             } catch (error) {
-                log(
-                    "eepresetselector@ulville.github.io : easyeffects unavailable"
-                );
                 Main.notify(
                     _("EasyEffects command-line options not available"),
                     _(
-                        'Make sure it\'s installed correctly. Run "easyeffects -p" to check'
+                        "Make sure it's installed correctly. Flatpak is unsupported\n\n" +
+                            error
                     )
                 );
+                logError(error);
             }
         }
 
@@ -149,16 +148,15 @@ const EEPSIndicator = GObject.registerClass(
                     });
                 })
                 .catch((data) => {
-                    logError(data);
-                    logError(
-                        "eepresetselector@ulville.github.io : easyeffects unavailable"
-                    );
                     Main.notify(
                         _("EasyEffects command-line options not available"),
                         _(
-                            'Make sure it\'s installed correctly. Run "easyeffects -p" to check'
+                            "Make sure it's installed correctly. Flatpak is unsupported..." +
+                                "\n______________________________________________________\n\n" +
+                                data
                         )
                     );
+                    logError(data);
                 });
         }
 
@@ -174,7 +172,16 @@ const EEPSIndicator = GObject.registerClass(
                 argv: argv,
                 flags: flags,
             });
-            proc.init(cancellable);
+            try {
+                proc.init(cancellable);
+            } catch (e) {
+                return new Promise((resolve, reject) => {
+                    reject(e);
+                    if (cancelId > 0) {
+                        cancellable.disconnect(cancelId);
+                    }
+                });
+            }
 
             if (cancellable instanceof Gio.Cancellable) {
                 cancelId = cancellable.connect(() => proc.force_exit());
@@ -187,6 +194,7 @@ const EEPSIndicator = GObject.registerClass(
                         let status = proc.get_exit_status();
 
                         if (status !== 0) {
+                            reject(stderr);
                             throw new Gio.IOErrorEnum({
                                 code: Gio.io_error_from_errno(status),
                                 message: stderr
