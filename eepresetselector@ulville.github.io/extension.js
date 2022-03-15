@@ -190,7 +190,8 @@ const EEPSIndicator = GObject.registerClass(
             return new Promise((resolve, reject) => {
                 proc.communicate_utf8_async(input, null, (proc, res) => {
                     try {
-                        let [, , stderr] = proc.communicate_utf8_finish(res);
+                        let [, stdout, stderr] =
+                            proc.communicate_utf8_finish(res);
                         let status = proc.get_exit_status();
 
                         if (status !== 0) {
@@ -202,8 +203,13 @@ const EEPSIndicator = GObject.registerClass(
                                     : GLib.strerror(status),
                             });
                         }
-
-                        resolve(stderr);
+                        if (stdout) {
+                            resolve(stdout);
+                        } else {
+                            // Command gives output as stderr on some versions of EasyEffects for some reason...
+                            // Looks like it's fixed on never versions. This if-else is for compatibility
+                            resolve(stderr);
+                        }
                     } catch (e) {
                         reject(e);
                     } finally {
