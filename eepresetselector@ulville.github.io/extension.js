@@ -22,7 +22,7 @@
 
 const GETTEXT_DOMAIN = "eepresetselector@ulville.github.io";
 
-const { GObject, St, GLib, Gio } = imports.gi;
+const { GObject, St, GLib, Gio, Shell } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Main = imports.ui.main;
@@ -51,113 +51,146 @@ const EEPSIndicator = GObject.registerClass(
             this._refreshMenu();
         }
 
-        _loadPreset(preset) {
+        _loadPreset(preset, command_arr) {
+            let command_str = command_arr.concat(["-l"]).join(" ") + " ";
+
             try {
-                GLib.spawn_command_line_async("easyeffects -l " + preset);
+                GLib.spawn_command_line_async(command_str + preset);
             } catch (error) {
                 Main.notify(
-                    _("EasyEffects command-line options not available"),
-                    _(
-                        "Make sure it's installed correctly. Flatpak is unsupported\n\n" +
-                            error
-                    )
+                    _("An error occured while trying to load the preset"),
+                    _("Error:\n\n" + error)
                 );
                 logError(error);
             }
         }
 
         _refreshMenu() {
-            this.execCommunicate(["easyeffects", "-p"])
-                .then((data) => {
-                    // Clear Menu
-                    this.menu._getMenuItems().forEach((item) => {
-                        item.destroy();
-                    });
-                    this.categoryNames = [];
-                    this.outputPresets = [];
-                    this.inputPresets = [];
-                    // Parse Data
-                    let presetCategories = data.split("\n");
-                    presetCategories.pop();
-                    let presetsAsText = [];
-                    presetCategories.forEach((element) => {
-                        let splittedElement = element.split(":");
-                        this.categoryNames.push(splittedElement[0]);
-                        presetsAsText.push(splittedElement[1]);
-                    });
+            // Learn if EasyEffects is installed as a Flatpak
+            let appSystem = Shell.AppSystem.get_default();
+            let app = appSystem.lookup_app(
+                "com.github.wwmm.easyeffects.desktop"
+            );
+            if (!app) {
+                Main.notify(
+                    _("EasyEffects isn't available on the system"),
+                    _("This extension depends on EasyEffects to function")
+                );
+                log(_("EasyEffects isn't available on the system"));
+            } else {
+                let info = app.get_app_info();
+                let filename = info.get_filename();
+                let command;
+                if (filename.includes("flatpak")) {
+                    command = ["flatpak", "run", "com.github.wwmm.easyeffects"];
+                } else {
+                    command = ["easyeffects"];
+                }
 
-                    this.outputPresets = presetsAsText[0].trim().split(",");
-                    if (
-                        this.outputPresets[this.outputPresets.length - 1] === ""
-                    ) {
-                        this.outputPresets.pop();
-                    }
-                    this.inputPresets = presetsAsText[1].trim().split(",");
-                    if (
-                        this.inputPresets[this.inputPresets.length - 1] === ""
-                    ) {
-                        this.inputPresets.pop();
-                    }
+                this.execCommunicate(command.concat(["-p"]))
+                    .then((data) => {
+                        // Clear Menu
+                        this.menu._getMenuItems().forEach((item) => {
+                            item.destroy();
+                        });
+                        this.categoryNames = [];
+                        this.outputPresets = [];
+                        this.inputPresets = [];
+                        // Parse Data
+                        let presetCategories = data.split("\n");
+                        if (
+                            presetCategories[presetCategories.length - 1] === ""
+                        ) {
+                            presetCategories.pop();
+                        }
+                        while (presetCategories.length > 2) {
+                            presetCategories.shift();
+                        }
+                        let presetsAsText = [];
+                        presetCategories.forEach((element) => {
+                            let splittedElement = element.split(":");
+                            this.categoryNames.push(splittedElement[0]);
+                            presetsAsText.push(splittedElement[1]);
+                        });
 
-                    // Category Title: "Output Presets" (As how the command did output it)
-                    if (this.categoryNames[0]) {
-                        let _outputTitle = new PopupMenu.PopupMenuItem(
-                            _(this.categoryNames[0]) + ":"
+                        this.outputPresets = presetsAsText[0].trim().split(",");
+                        if (
+                            this.outputPresets[
+                                this.outputPresets.length - 1
+                            ] === ""
+                        ) {
+                            this.outputPresets.pop();
+                        }
+                        this.inputPresets = presetsAsText[1].trim().split(",");
+                        if (
+                            this.inputPresets[this.inputPresets.length - 1] ===
+                            ""
+                        ) {
+                            this.inputPresets.pop();
+                        }
+
+                        // Category Title: "Output Presets" (As how the command did output it)
+                        if (this.categoryNames[0]) {
+                            let _outputTitle = new PopupMenu.PopupMenuItem(
+                                _(this.categoryNames[0]) + ":"
+                            );
+                            _outputTitle.style_class = "preset-title-item";
+                            _outputTitle.connect("activate", () => {
+                                this._refreshMenu();
+                            });
+                            this.menu.addMenuItem(_outputTitle);
+                        }
+
+                        // Add a menu item to menu for each output preset and connect it to easyeffects' load preset command
+                        this.outputPresets.forEach((element) => {
+                            let _menuItem = new PopupMenu.PopupMenuItem(
+                                _(element)
+                            );
+                            let argument = element.replace(" ", "\\ ");
+                            _menuItem.connect("activate", () => {
+                                this._loadPreset(argument, command);
+                            });
+                            this.menu.addMenuItem(_menuItem);
+                        });
+
+                        this.menu.addMenuItem(
+                            new PopupMenu.PopupSeparatorMenuItem()
                         );
-                        _outputTitle.style_class = "preset-title-item";
-                        _outputTitle.connect("activate", () => {
-                            this._refreshMenu();
+
+                        // Category Title: "Input Presets" (As how the command did output it)
+                        if (this.categoryNames[1]) {
+                            let _inputTitle = new PopupMenu.PopupMenuItem(
+                                _(this.categoryNames[1]) + ":"
+                            );
+                            _inputTitle.style_class = "preset-title-item";
+                            _inputTitle.connect("activate", () => {
+                                this._refreshMenu();
+                            });
+                            this.menu.addMenuItem(_inputTitle);
+                        }
+
+                        // Add a menu item to menu for each input preset and connect it to easyeffects' load preset command
+                        this.inputPresets.forEach((element) => {
+                            let _menuItem = new PopupMenu.PopupMenuItem(
+                                _(element)
+                            );
+                            let argument = element.replace(" ", "\\ ");
+                            _menuItem.connect("activate", () => {
+                                this._loadPreset(argument, command);
+                            });
+                            this.menu.addMenuItem(_menuItem);
                         });
-                        this.menu.addMenuItem(_outputTitle);
-                    }
-
-                    // Add a menu item to menu for each output preset and connect it to easyeffects' load preset command
-                    this.outputPresets.forEach((element) => {
-                        let _menuItem = new PopupMenu.PopupMenuItem(_(element));
-                        let argument = element.replace(" ", "\\ ");
-                        _menuItem.connect("activate", () => {
-                            this._loadPreset(argument);
-                        });
-                        this.menu.addMenuItem(_menuItem);
-                    });
-
-                    this.menu.addMenuItem(
-                        new PopupMenu.PopupSeparatorMenuItem()
-                    );
-
-                    // Category Title: "Input Presets" (As how the command did output it)
-                    if (this.categoryNames[1]) {
-                        let _inputTitle = new PopupMenu.PopupMenuItem(
-                            _(this.categoryNames[1]) + ":"
+                    })
+                    .catch((data) => {
+                        Main.notify(
+                            _(
+                                "An error occured while trying to get available presets"
+                            ),
+                            _("Error:\n\n" + data)
                         );
-                        _inputTitle.style_class = "preset-title-item";
-                        _inputTitle.connect("activate", () => {
-                            this._refreshMenu();
-                        });
-                        this.menu.addMenuItem(_inputTitle);
-                    }
-
-                    // Add a menu item to menu for each input preset and connect it to easyeffects' load preset command
-                    this.inputPresets.forEach((element) => {
-                        let _menuItem = new PopupMenu.PopupMenuItem(_(element));
-                        let argument = element.replace(" ", "\\ ");
-                        _menuItem.connect("activate", () => {
-                            this._loadPreset(argument);
-                        });
-                        this.menu.addMenuItem(_menuItem);
+                        logError(data);
                     });
-                })
-                .catch((data) => {
-                    Main.notify(
-                        _("EasyEffects command-line options not available"),
-                        _(
-                            "Make sure it's installed correctly. Flatpak is unsupported..." +
-                                "\n______________________________________________________\n\n" +
-                                data
-                        )
-                    );
-                    logError(data);
-                });
+            }
         }
 
         async execCommunicate(argv, input = null, cancellable = null) {
@@ -203,11 +236,21 @@ const EEPSIndicator = GObject.registerClass(
                                     : GLib.strerror(status),
                             });
                         }
-                        if (stdout) {
+                        // Command gives output as stderr on some versions of EasyEffects for some reason...
+                        // Looks like it's fixed on never versions. This if-else is for compatibility
+                        // Flatpak version 6.2.3 prints some messages to stdout but data we want is in stderr
+                        if (stdout && !stderr) {
+                            // If there is only stdout but no stderr (for version >= v6.2.4, flatpak or non-flatpak)
                             resolve(stdout);
+                        } else if (!stdout && !stderr) {
+                            // If there is no stderr and no stdout : there is a problem
+                            let custom_err = new Error(
+                                "Command ran succesfully but printed nothing"
+                            );
+                            reject(custom_err);
                         } else {
-                            // Command gives output as stderr on some versions of EasyEffects for some reason...
-                            // Looks like it's fixed on never versions. This if-else is for compatibility
+                            // If there is both stderr and stdout (for flatpak vers. < v6.2.4)
+                            // Or there is no stdout but only stderr (for non-flatpak vers. < v6.2.4)
                             resolve(stderr);
                         }
                     } catch (e) {
