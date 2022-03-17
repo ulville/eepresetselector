@@ -10,6 +10,13 @@ This GNOME Extension lets users to quickly view and select the preset they want 
 
 ## Installation
 
+### From GNOME Extensions Website
+
+- Go to [GNOME Extensions Website](https://extensions.gnome.org) and search for EasyEffects Preset Selector
+- You need to have GNOME Shell Integration add-on installed for your browser to be able to install extensions from [GNOME Extensions Website](https://extensions.gnome.org)
+
+### Manual Installation
+
 - Clone the repository:
 ```
 git clone https://github.com/ulville/eepresetselector.git
@@ -20,6 +27,20 @@ cp -r eepresetselector/eepresetselector@ulville.github.io ~/.local/share/gnome-s
 ```
 - Log out and login.
 - Enable the extension from GNOME Extensions app.
+
+### Install Script
+
+- Clone the repository as stated above.
+- Run install script:
+```
+cd eepresetselector
+```
+```
+chmod +x install.sh
+```
+```
+./install.sh
+```
 
 ### Dependencies
 
