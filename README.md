@@ -20,10 +20,13 @@ It's tested mostly on GNOME version 41 but it uses rather stable modules and lib
 
 ### Install From GNOME Extensions Website
 
--   Go to [GNOME Extensions Website](https://extensions.gnome.org) and search for EasyEffects Preset Selector
--   You need to have GNOME Shell Integration add-on installed for your browser to be able to install extensions from [GNOME Extensions Website](https://extensions.gnome.org)
+-   You can install the extension directy from [here](https://extensions.gnome.org/extension/4907/easyeffects-preset-selector/).
+-   Alternatively go to [GNOME Extensions Website](https://extensions.gnome.org) and search for EasyEffects Preset Selector
+-   To be able to install extensions from extensions website, you need to have:
+    1. `chrome-gnome-shell` package (from your package manager) (regardless of what you use as browser firefox or chromium based this package works for all of them)
+    2. GNOME Shell Integration add-on for your browser - [for chromium](https://chrome.google.com/webstore/detail/gnome-shell-integration/gphhapmejobijbbhgpjhcjognlahblep) , [for firefox](https://addons.mozilla.org/tr/firefox/addon/gnome-shell-integration/)
 
--   Note: Because of the review process, versions on the GNOME Extensions Website may lag behind sometimes.
+-   Note: Because of the review process, new versions on the GNOME Extensions Website may lag a few days behind sometimes.
 
 ### Manual Installation
 
