@@ -3,8 +3,8 @@
   "description": "Quickly show and load EasyEffects Presets",
   "uuid": "eepresetselector@ulville.github.io",
   "shell-version": [
-    "3.38", "40", "41"
+    "3.38", "40", "41", "42"
   ],
   "url": "https://github.com/ulville/eepresetselector",
-  "version": 3
+  "version": 4
 }
