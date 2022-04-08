@@ -42,7 +42,7 @@ const EEPSIndicator = GObject.registerClass(
 
             this._icon = new St.Icon({ style_class: "system-status-icon" });
             this._icon.gicon = Gio.icon_new_for_string(
-                `${Me.path}/icons/eepresetselector.svg`
+                `${Me.path}/icons/eepresetselector-symbolic.svg`
             );
             this.add_child(this._icon);
             this.connect("button-press-event", () => {
