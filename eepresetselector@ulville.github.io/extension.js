@@ -146,7 +146,9 @@ const EEPSIndicator = GObject.registerClass(
                             let _menuItem = new PopupMenu.PopupMenuItem(
                                 _(element)
                             );
-                            let argument = element.replace(" ", "\\ ");
+                            let argument = element
+                                .replace(" ", "\\ ")
+                                .replace("'", "\\'");
                             _menuItem.connect("activate", () => {
                                 this._loadPreset(argument, command);
                             });
@@ -174,7 +176,9 @@ const EEPSIndicator = GObject.registerClass(
                             let _menuItem = new PopupMenu.PopupMenuItem(
                                 _(element)
                             );
-                            let argument = element.replace(" ", "\\ ");
+                            let argument = element
+                                .replace(" ", "\\ ")
+                                .replace("'", "\\'");
                             _menuItem.connect("activate", () => {
                                 this._loadPreset(argument, command);
                             });
