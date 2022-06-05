@@ -87,6 +87,17 @@ const EEPSIndicator = GObject.registerClass(
                     command = ["easyeffects"];
                 }
 
+                // Get last used presets
+                const settings = new Gio.Settings({
+                    schema_id: "com.github.wwmm.easyeffects",
+                });
+                let lastUsedOutputPreset = settings.get_string(
+                    "last-used-output-preset"
+                );
+                let lastUsedInputPreset = settings.get_string(
+                    "last-used-input-preset"
+                );
+
                 this.execCommunicate(command.concat(["-p"]))
                     .then((data) => {
                         // Clear Menu
@@ -131,8 +142,9 @@ const EEPSIndicator = GObject.registerClass(
 
                         // Category Title: "Output Presets" (As how the command did output it)
                         if (this.categoryNames[0]) {
-                            let _outputTitle = new PopupMenu.PopupMenuItem(
-                                _(this.categoryNames[0]) + ":"
+                            let _outputTitle = new PopupMenu.PopupImageMenuItem(
+                                _(this.categoryNames[0]) + ":",
+                                _("audio-speakers-symbolic")
                             );
                             _outputTitle.style_class = "preset-title-item";
                             _outputTitle.connect("activate", () => {
@@ -146,6 +158,9 @@ const EEPSIndicator = GObject.registerClass(
                             let _menuItem = new PopupMenu.PopupMenuItem(
                                 _(element)
                             );
+                            if (element === lastUsedOutputPreset) {
+                                _menuItem.setOrnament(PopupMenu.Ornament.CHECK);
+                            }
                             let argument = element
                                 .replace(" ", "\\ ")
                                 .replace("'", "\\'");
@@ -161,8 +176,9 @@ const EEPSIndicator = GObject.registerClass(
 
                         // Category Title: "Input Presets" (As how the command did output it)
                         if (this.categoryNames[1]) {
-                            let _inputTitle = new PopupMenu.PopupMenuItem(
-                                _(this.categoryNames[1]) + ":"
+                            let _inputTitle = new PopupMenu.PopupImageMenuItem(
+                                _(this.categoryNames[1]) + ":",
+                                _("audio-input-microphone-symbolic")
                             );
                             _inputTitle.style_class = "preset-title-item";
                             _inputTitle.connect("activate", () => {
@@ -176,6 +192,9 @@ const EEPSIndicator = GObject.registerClass(
                             let _menuItem = new PopupMenu.PopupMenuItem(
                                 _(element)
                             );
+                            if (element === lastUsedInputPreset) {
+                                _menuItem.setOrnament(PopupMenu.Ornament.CHECK);
+                            }
                             let argument = element
                                 .replace(" ", "\\ ")
                                 .replace("'", "\\'");
