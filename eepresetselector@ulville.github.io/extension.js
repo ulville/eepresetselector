@@ -78,25 +78,55 @@ const EEPSIndicator = GObject.registerClass(
                 );
                 log(_("EasyEffects isn't available on the system"));
             } else {
+                let lastUsedOutputPreset = "";
+                let lastUsedInputPreset = "";
                 let info = app.get_app_info();
                 let filename = info.get_filename();
                 let command;
                 if (filename.includes("flatpak")) {
                     command = ["flatpak", "run", "com.github.wwmm.easyeffects"];
+                    // Get last used preset from the flatpak's sandbox
+                    this.execCommunicate([
+                        "flatpak",
+                        "run",
+                        "--command=/usr/bin/gsettings",
+                        "com.github.wwmm.easyeffects",
+                        "get",
+                        "com.github.wwmm.easyeffects",
+                        "last-used-output-preset",
+                    ]).then((data) => {
+                        lastUsedOutputPreset = data
+                            .replace("'", "")
+                            .replace("'", "")
+                            .trim();
+                    });
+                    this.execCommunicate([
+                        "flatpak",
+                        "run",
+                        "--command=/usr/bin/gsettings",
+                        "com.github.wwmm.easyeffects",
+                        "get",
+                        "com.github.wwmm.easyeffects",
+                        "last-used-input-preset",
+                    ]).then((data) => {
+                        lastUsedInputPreset = data
+                            .replace("'", "")
+                            .replace("'", "")
+                            .trim();
+                    });
                 } else {
                     command = ["easyeffects"];
+                    // Get last used presets
+                    const settings = new Gio.Settings({
+                        schema_id: "com.github.wwmm.easyeffects",
+                    });
+                    lastUsedOutputPreset = settings.get_string(
+                        "last-used-output-preset"
+                    );
+                    lastUsedInputPreset = settings.get_string(
+                        "last-used-input-preset"
+                    );
                 }
-
-                // Get last used presets
-                const settings = new Gio.Settings({
-                    schema_id: "com.github.wwmm.easyeffects",
-                });
-                let lastUsedOutputPreset = settings.get_string(
-                    "last-used-output-preset"
-                );
-                let lastUsedInputPreset = settings.get_string(
-                    "last-used-input-preset"
-                );
 
                 this.execCommunicate(command.concat(["-p"]))
                     .then((data) => {
