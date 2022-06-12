@@ -36,7 +36,7 @@ const Me = ExtensionUtils.getCurrentExtension();
 const EEPSIndicator = GObject.registerClass(
     class EEPSIndicator extends PanelMenu.Button {
         _init() {
-            super._init(0.0, _("EasyEffects Preset Selector"));
+            super._init(0.5, _("EasyEffects Preset Selector"));
 
             this.categoryNames, this.outputPresets, this.inputPresets;
 
@@ -61,9 +61,6 @@ const EEPSIndicator = GObject.registerClass(
                 if (await succesful) {
                     await new Promise((r) => setTimeout(r, 500));
                     this._refreshMenu();
-                    // log(_("Done loading and refreshing"));
-                    // let txts = await this.getLastPresets("flatpak");
-                    // log(_(txts.join("\n")));
                 }
             } catch (error) {
                 Main.notify(
