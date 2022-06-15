@@ -56,7 +56,7 @@ const EEPSIndicator = GObject.registerClass(
             this._refreshMenu();
         }
 
-        async _loadPreset(preset, command_arr) {
+        _loadPreset(preset, command_arr) {
             let argument = preset.replace(" ", "\\ ").replace("'", "\\'");
             let command_str = command_arr.concat(["-l"]).join(" ") + " ";
 
