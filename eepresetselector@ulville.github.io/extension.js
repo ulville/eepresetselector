@@ -119,7 +119,7 @@ const EEPSIndicator = GObject.registerClass(
             outputPresets.forEach((element) => {
                 let _menuItem = new PopupMenu.PopupMenuItem(_(element));
                 if (element === lastUsedOutputPreset) {
-                    _menuItem.setOrnament(PopupMenu.Ornament.CHECK);
+                    _menuItem.setOrnament(PopupMenu.Ornament.DOT);
                 }
                 _menuItem.connect("activate", () => {
                     this._loadPreset(element, command);
@@ -146,7 +146,7 @@ const EEPSIndicator = GObject.registerClass(
             inputPresets.forEach((element) => {
                 let _menuItem = new PopupMenu.PopupMenuItem(_(element));
                 if (element === lastUsedInputPreset) {
-                    _menuItem.setOrnament(PopupMenu.Ornament.CHECK);
+                    _menuItem.setOrnament(PopupMenu.Ornament.DOT);
                 }
                 _menuItem.connect("activate", () => {
                     this._loadPreset(element, command);
