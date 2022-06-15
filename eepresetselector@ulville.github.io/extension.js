@@ -36,9 +36,14 @@ const Me = ExtensionUtils.getCurrentExtension();
 const EEPSIndicator = GObject.registerClass(
     class EEPSIndicator extends PanelMenu.Button {
         _init() {
-            super._init(0.0, _("EasyEffects Preset Selector"));
+            super._init(0.5, _("EasyEffects Preset Selector"));
 
-            this.categoryNames, this.outputPresets, this.inputPresets;
+            this.categoryNames,
+                this.outputPresets,
+                this.inputPresets,
+                this.lastUsedInputPreset,
+                this.lastUsedOutputPreset;
+            this.lastPresetLoadTime = new Date().getTime();
 
             this._icon = new St.Icon({ style_class: "system-status-icon" });
             this._icon.gicon = Gio.icon_new_for_string(
@@ -52,10 +57,29 @@ const EEPSIndicator = GObject.registerClass(
         }
 
         _loadPreset(preset, command_arr) {
+            let argument = preset.replace(" ", "\\ ").replace("'", "\\'");
             let command_str = command_arr.concat(["-l"]).join(" ") + " ";
 
             try {
-                GLib.spawn_command_line_async(command_str + preset);
+                GLib.spawn_command_line_async(command_str + argument);
+                this.lastPresetLoadTime = new Date().getTime();
+
+                if (this.outputPresets.includes(preset)) {
+                    this.lastUsedOutputPreset = preset;
+                }
+                if (this.inputPresets.includes(preset)) {
+                    this.lastUsedInputPreset = preset;
+                }
+
+                this._buildMenu(
+                    this.categoryNames[0],
+                    this.categoryNames[1],
+                    this.outputPresets,
+                    this.inputPresets,
+                    this.lastUsedOutputPreset,
+                    this.lastUsedInputPreset,
+                    command_arr
+                );
             } catch (error) {
                 Main.notify(
                     _("An error occured while trying to load the preset"),
@@ -65,78 +89,146 @@ const EEPSIndicator = GObject.registerClass(
             }
         }
 
-        _refreshMenu() {
+        _buildMenu(
+            outputCategoryName,
+            inputCategoryName,
+            outputPresets,
+            inputPresets,
+            lastUsedOutputPreset,
+            lastUsedInputPreset,
+            command
+        ) {
+            // Clear Menu
+            this.menu._getMenuItems().forEach((item) => {
+                item.destroy();
+            });
+            // Category Title: "Output Presets" (As how the command did output it)
+            if (outputCategoryName) {
+                let _outputTitle = new PopupMenu.PopupImageMenuItem(
+                    _(outputCategoryName) + ":",
+                    _("audio-speakers-symbolic")
+                );
+                _outputTitle.style_class = "preset-title-item";
+                _outputTitle.connect("activate", () => {
+                    this._refreshMenu();
+                });
+                this.menu.addMenuItem(_outputTitle);
+            }
+
+            // Add a menu item to menu for each output preset and connect it to easyeffects' load preset command
+            outputPresets.forEach((element) => {
+                let _menuItem = new PopupMenu.PopupMenuItem(_(element));
+                if (element === lastUsedOutputPreset) {
+                    _menuItem.setOrnament(PopupMenu.Ornament.CHECK);
+                }
+                _menuItem.connect("activate", () => {
+                    this._loadPreset(element, command);
+                });
+                this.menu.addMenuItem(_menuItem);
+            });
+
+            this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+
+            // Category Title: "Input Presets" (As how the command did output it)
+            if (inputCategoryName) {
+                let _inputTitle = new PopupMenu.PopupImageMenuItem(
+                    _(inputCategoryName) + ":",
+                    _("audio-input-microphone-symbolic")
+                );
+                _inputTitle.style_class = "preset-title-item";
+                _inputTitle.connect("activate", () => {
+                    this._refreshMenu();
+                });
+                this.menu.addMenuItem(_inputTitle);
+            }
+
+            // Add a menu item to menu for each input preset and connect it to easyeffects' load preset command
+            inputPresets.forEach((element) => {
+                let _menuItem = new PopupMenu.PopupMenuItem(_(element));
+                if (element === lastUsedInputPreset) {
+                    _menuItem.setOrnament(PopupMenu.Ornament.CHECK);
+                }
+                _menuItem.connect("activate", () => {
+                    this._loadPreset(element, command);
+                });
+                this.menu.addMenuItem(_menuItem);
+            });
+        }
+
+        async _refreshMenu() {
             // Learn if EasyEffects is installed as a Flatpak
             let appSystem = Shell.AppSystem.get_default();
             let app = appSystem.lookup_app(
                 "com.github.wwmm.easyeffects.desktop"
             );
             if (!app) {
+                this.menu._getMenuItems().forEach((item) => {
+                    item.destroy();
+                });
                 Main.notify(
                     _("EasyEffects isn't available on the system"),
                     _("This extension depends on EasyEffects to function")
                 );
                 log(_("EasyEffects isn't available on the system"));
             } else {
-                let lastUsedOutputPreset = "";
-                let lastUsedInputPreset = "";
                 let info = app.get_app_info();
                 let filename = info.get_filename();
                 let command;
+                let app_type;
                 if (filename.includes("flatpak")) {
+                    app_type = "flatpak";
                     command = ["flatpak", "run", "com.github.wwmm.easyeffects"];
-                    // Get last used preset from the flatpak's sandbox
-                    this.execCommunicate([
-                        "flatpak",
-                        "run",
-                        "--command=/usr/bin/gsettings",
-                        "com.github.wwmm.easyeffects",
-                        "get",
-                        "com.github.wwmm.easyeffects",
-                        "last-used-output-preset",
-                    ]).then((data) => {
-                        lastUsedOutputPreset = data
-                            .replace("'", "")
-                            .replace("'", "")
-                            .trim();
-                    });
-                    this.execCommunicate([
-                        "flatpak",
-                        "run",
-                        "--command=/usr/bin/gsettings",
-                        "com.github.wwmm.easyeffects",
-                        "get",
-                        "com.github.wwmm.easyeffects",
-                        "last-used-input-preset",
-                    ]).then((data) => {
-                        lastUsedInputPreset = data
-                            .replace("'", "")
-                            .replace("'", "")
-                            .trim();
-                    });
                 } else {
                     command = ["easyeffects"];
-                    // Get last used presets
-                    const settings = new Gio.Settings({
-                        schema_id: "com.github.wwmm.easyeffects",
-                    });
-                    lastUsedOutputPreset = settings.get_string(
-                        "last-used-output-preset"
-                    );
-                    lastUsedInputPreset = settings.get_string(
-                        "last-used-input-preset"
-                    );
+                    app_type = "native";
                 }
+                let er_message =
+                    "An error occured while trying to get last presets";
+                try {
+                    let lastPresets;
+                    if (app_type === "flatpak") {
+                        let timeDiff =
+                            new Date().getTime() - this.lastPresetLoadTime;
+                        if (timeDiff < 1000) {
+                            await new Promise((resolve) => {
+                                setTimeout(() => resolve(), 1000 - timeDiff);
+                            });
+                        }
+                        lastPresets = await this.getLastPresets(app_type);
+                        for (let n = 0; n < 3; n++) {
+                            if (
+                                lastPresets[0].includes("**") ||
+                                lastPresets[1].includes("**")
+                            ) {
+                                lastPresets = await this.getLastPresets(
+                                    app_type
+                                );
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+                    this.lastUsedOutputPreset = lastPresets[0];
+                    this.lastUsedInputPreset = lastPresets[1];
 
-                this.execCommunicate(command.concat(["-p"]))
-                    .then((data) => {
-                        // Clear Menu
-                        this.menu._getMenuItems().forEach((item) => {
-                            item.destroy();
-                        });
-                        this.categoryNames = [];
-                        this.outputPresets = [];
-                        this.inputPresets = [];
+                    this.categoryNames = [];
+                    this.outputPresets = [];
+                    this.inputPresets = [];
+                    try {
+                        let data = await this.execCommunicate(
+                            command.concat(["-p"])
+                        );
+
+                        for (let n = 0; n < 3; n++) {
+                            if (data.includes("**")) {
+                                data = await this.execCommunicate(
+                                    command.concat(["-p"])
+                                );
+                            } else {
+                                break;
+                            }
+                        }
+
                         // Parse Data
                         let presetCategories = data.split("\n");
                         if (
@@ -153,97 +245,106 @@ const EEPSIndicator = GObject.registerClass(
                             this.categoryNames.push(splittedElement[0]);
                             presetsAsText.push(splittedElement[1]);
                         });
-
-                        this.outputPresets = presetsAsText[0].trim().split(",");
-                        if (
-                            this.outputPresets[
-                                this.outputPresets.length - 1
-                            ] === ""
-                        ) {
-                            this.outputPresets.pop();
-                        }
-                        this.inputPresets = presetsAsText[1].trim().split(",");
-                        if (
-                            this.inputPresets[this.inputPresets.length - 1] ===
-                            ""
-                        ) {
-                            this.inputPresets.pop();
-                        }
-
-                        // Category Title: "Output Presets" (As how the command did output it)
-                        if (this.categoryNames[0]) {
-                            let _outputTitle = new PopupMenu.PopupImageMenuItem(
-                                _(this.categoryNames[0]) + ":",
-                                _("audio-speakers-symbolic")
-                            );
-                            _outputTitle.style_class = "preset-title-item";
-                            _outputTitle.connect("activate", () => {
-                                this._refreshMenu();
-                            });
-                            this.menu.addMenuItem(_outputTitle);
-                        }
-
-                        // Add a menu item to menu for each output preset and connect it to easyeffects' load preset command
-                        this.outputPresets.forEach((element) => {
-                            let _menuItem = new PopupMenu.PopupMenuItem(
-                                _(element)
-                            );
-                            if (element === lastUsedOutputPreset) {
-                                _menuItem.setOrnament(PopupMenu.Ornament.CHECK);
+                        try {
+                            this.outputPresets = presetsAsText[0]
+                                .trim()
+                                .split(",");
+                            if (
+                                this.outputPresets[
+                                    this.outputPresets.length - 1
+                                ] === ""
+                            ) {
+                                this.outputPresets.pop();
                             }
-                            let argument = element
-                                .replace(" ", "\\ ")
-                                .replace("'", "\\'");
-                            _menuItem.connect("activate", () => {
-                                this._loadPreset(argument, command);
-                            });
-                            this.menu.addMenuItem(_menuItem);
-                        });
-
-                        this.menu.addMenuItem(
-                            new PopupMenu.PopupSeparatorMenuItem()
-                        );
-
-                        // Category Title: "Input Presets" (As how the command did output it)
-                        if (this.categoryNames[1]) {
-                            let _inputTitle = new PopupMenu.PopupImageMenuItem(
-                                _(this.categoryNames[1]) + ":",
-                                _("audio-input-microphone-symbolic")
+                            this.inputPresets = presetsAsText[1]
+                                .trim()
+                                .split(",");
+                            if (
+                                this.inputPresets[
+                                    this.inputPresets.length - 1
+                                ] === ""
+                            ) {
+                                this.inputPresets.pop();
+                            }
+                        } catch (e) {
+                            Main.notify(
+                                _(
+                                    "An error occured while trying to get available presets"
+                                ),
+                                _("Error:\n" + e + "\n\nGot data:\n" + data)
                             );
-                            _inputTitle.style_class = "preset-title-item";
-                            _inputTitle.connect("activate", () => {
-                                this._refreshMenu();
-                            });
-                            this.menu.addMenuItem(_inputTitle);
+                            logError(e);
+                            logError(new Error(data));
                         }
 
-                        // Add a menu item to menu for each input preset and connect it to easyeffects' load preset command
-                        this.inputPresets.forEach((element) => {
-                            let _menuItem = new PopupMenu.PopupMenuItem(
-                                _(element)
-                            );
-                            if (element === lastUsedInputPreset) {
-                                _menuItem.setOrnament(PopupMenu.Ornament.CHECK);
-                            }
-                            let argument = element
-                                .replace(" ", "\\ ")
-                                .replace("'", "\\'");
-                            _menuItem.connect("activate", () => {
-                                this._loadPreset(argument, command);
-                            });
-                            this.menu.addMenuItem(_menuItem);
-                        });
-                    })
-                    .catch((data) => {
-                        Main.notify(
-                            _(
-                                "An error occured while trying to get available presets"
-                            ),
-                            _("Error:\n\n" + data)
+                        this._buildMenu(
+                            this.categoryNames[0],
+                            this.categoryNames[1],
+                            this.outputPresets,
+                            this.inputPresets,
+                            this.lastUsedOutputPreset,
+                            this.lastUsedInputPreset,
+                            command
                         );
-                        logError(data);
-                    });
+                    } finally {
+                        er_message =
+                            "An error occured while trying to get available presets";
+                    }
+                } catch (e) {
+                    Main.notify(_(er_message), _("Error:\n\n" + e));
+                    logError(e);
+                }
             }
+        }
+
+        async getLastPresets(app_type) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    let _lastUsedOutputPreset = "";
+                    let _lastUsedInputPreset = "";
+
+                    if (app_type === "flatpak") {
+                        // Get last used preset from the flatpak's sandbox
+                        let command = [
+                            "flatpak",
+                            "run",
+                            "--command=/usr/bin/gsettings",
+                            "com.github.wwmm.easyeffects",
+                            "get",
+                            "com.github.wwmm.easyeffects",
+                        ];
+                        let _odata = await this.execCommunicate(
+                            command.concat(["last-used-output-preset"])
+                        );
+                        _lastUsedOutputPreset = _odata
+                            .replace("'", "")
+                            .replace("'", "")
+                            .trim();
+
+                        let _idata = await this.execCommunicate(
+                            command.concat(["last-used-input-preset"])
+                        );
+                        _lastUsedInputPreset = _idata
+                            .replace("'", "")
+                            .replace("'", "")
+                            .trim();
+                    } else if (app_type === "native") {
+                        // Get last used presets
+                        const settings = new Gio.Settings({
+                            schema_id: "com.github.wwmm.easyeffects",
+                        });
+                        _lastUsedOutputPreset = settings.get_string(
+                            "last-used-output-preset"
+                        );
+                        _lastUsedInputPreset = settings.get_string(
+                            "last-used-input-preset"
+                        );
+                    }
+                    resolve([_lastUsedOutputPreset, _lastUsedInputPreset]);
+                } catch (error) {
+                    reject(error);
+                }
+            });
         }
 
         async execCommunicate(argv, input = null, cancellable = null) {
