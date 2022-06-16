@@ -207,6 +207,8 @@ const EEPSIndicator = GObject.registerClass(
                                 break;
                             }
                         }
+                    } else {
+                        lastPresets = await this.getLastPresets(app_type);
                     }
                     this.lastUsedOutputPreset = lastPresets[0];
                     this.lastUsedInputPreset = lastPresets[1];
