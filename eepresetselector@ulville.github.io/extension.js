@@ -57,7 +57,7 @@ const EEPSIndicator = GObject.registerClass(
         }
 
         _loadPreset(preset, command_arr) {
-            let argument = preset.replace(" ", "\\ ").replace("'", "\\'");
+            let argument = preset.replaceAll(" ", "\\ ").replaceAll("'", "\\'");
             let command_str = command_arr.concat(["-l"]).join(" ") + " ";
 
             try {
@@ -317,18 +317,12 @@ const EEPSIndicator = GObject.registerClass(
                         let _odata = await this.execCommunicate(
                             command.concat(["last-used-output-preset"])
                         );
-                        _lastUsedOutputPreset = _odata
-                            .replace("'", "")
-                            .replace("'", "")
-                            .trim();
+                        _lastUsedOutputPreset = _odata.trim().slice(1, -1);
 
                         let _idata = await this.execCommunicate(
                             command.concat(["last-used-input-preset"])
                         );
-                        _lastUsedInputPreset = _idata
-                            .replace("'", "")
-                            .replace("'", "")
-                            .trim();
+                        _lastUsedInputPreset = _idata.trim().slice(1, -1);
                     } else if (app_type === "native") {
                         // Get last used presets
                         const settings = new Gio.Settings({
