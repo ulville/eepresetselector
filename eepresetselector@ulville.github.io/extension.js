@@ -38,11 +38,11 @@ const EEPSIndicator = GObject.registerClass(
         _init() {
             super._init(0.5, _("EasyEffects Preset Selector"));
 
-            this.categoryNames,
-                this.outputPresets,
-                this.inputPresets,
-                this.lastUsedInputPreset,
-                this.lastUsedOutputPreset;
+            this.categoryNames = [" ", " "];
+            this.outputPresets = [" "];
+            this.inputPresets = [" "];
+            this.lastUsedInputPreset = " ";
+            this.lastUsedOutputPreset = " ";
             this.lastPresetLoadTime = new Date().getTime();
 
             this._icon = new St.Icon({ style_class: "system-status-icon" });
@@ -70,16 +70,6 @@ const EEPSIndicator = GObject.registerClass(
                 if (this.inputPresets.includes(preset)) {
                     this.lastUsedInputPreset = preset;
                 }
-
-                this._buildMenu(
-                    this.categoryNames[0],
-                    this.categoryNames[1],
-                    this.outputPresets,
-                    this.inputPresets,
-                    this.lastUsedOutputPreset,
-                    this.lastUsedInputPreset,
-                    command_arr
-                );
             } catch (error) {
                 Main.notify(
                     _("An error occured while trying to load the preset"),
@@ -182,6 +172,15 @@ const EEPSIndicator = GObject.registerClass(
                     command = ["easyeffects"];
                     app_type = "native";
                 }
+                this._buildMenu(
+                    this.categoryNames[0],
+                    this.categoryNames[1],
+                    this.outputPresets,
+                    this.inputPresets,
+                    this.lastUsedOutputPreset,
+                    this.lastUsedInputPreset,
+                    command
+                );
                 let er_message =
                     "An error occured while trying to get last presets";
                 try {
