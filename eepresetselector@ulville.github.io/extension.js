@@ -309,10 +309,10 @@ const EEPSIndicator = GObject.registerClass(
                         let command = [
                             "flatpak",
                             "run",
-                            "--command=/usr/bin/gsettings",
-                            "com.github.wwmm.easyeffects",
-                            "get",
-                            "com.github.wwmm.easyeffects",
+                            "--command=/usr/bin/gsettings", // command we want to run instead of easyeffects
+                            "com.github.wwmm.easyeffects", // inside easyeffects' flatpak sandbox
+                            "get", // argument 1
+                            "com.github.wwmm.easyeffects", // argument 2
                         ];
                         let _odata = await this.execCommunicate(
                             command.concat(["last-used-output-preset"])
