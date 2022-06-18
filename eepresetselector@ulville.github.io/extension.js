@@ -29,9 +29,12 @@ const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 const ByteArray = imports.byteArray;
+const Mainloop = imports.mainloop;
+const Config = imports.misc.config;
 
 const _ = ExtensionUtils.gettext;
 const Me = ExtensionUtils.getCurrentExtension();
+const [major, minor] = Config.PACKAGE_VERSION.split(".").map((s) => Number(s));
 
 const EEPSIndicator = GObject.registerClass(
     class EEPSIndicator extends PanelMenu.Button {
@@ -43,7 +46,7 @@ const EEPSIndicator = GObject.registerClass(
             this.inputPresets = [" "];
             this.lastUsedInputPreset = " ";
             this.lastUsedOutputPreset = " ";
-            this.lastPresetLoadTime = new Date().getTime();
+            this.lastPresetLoadTime = 0;
 
             this._icon = new St.Icon({ style_class: "system-status-icon" });
             this._icon.gicon = Gio.icon_new_for_string(
@@ -190,7 +193,20 @@ const EEPSIndicator = GObject.registerClass(
                             new Date().getTime() - this.lastPresetLoadTime;
                         if (timeDiff < 1000) {
                             await new Promise((resolve) => {
-                                setTimeout(() => resolve(), 1000 - timeDiff);
+                                if (major >= 42) {
+                                    setTimeout(
+                                        () => resolve(),
+                                        1000 - timeDiff
+                                    );
+                                } else {
+                                    Mainloop.timeout_add(
+                                        1000 - timeDiff,
+                                        () => {
+                                            resolve();
+                                            return GLib.SOURCE_REMOVE;
+                                        }
+                                    );
+                                }
                             });
                         }
                         lastPresets = await this.getLastPresets(app_type);
