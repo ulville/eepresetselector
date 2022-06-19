@@ -1,4 +1,4 @@
-<img height="128" src="eepresetselector@ulville.github.io/icons/eepresetselector.svg" align="left"/>
+<img height="96" src="eepresetselector@ulville.github.io/icons/eepresetselector.svg" align="left"/>
 
 # EasyEffects Preset Selector GNOME Extension
 
@@ -20,13 +20,14 @@ This Extension depends on EasyEffects to function. It makes use of command-line 
 
 ~~Flatpak version is not supported for now.~~ Both Flatpak and non-flatpak versions of EasyEffects are supported.
 
-It's tested mostly on GNOME version 41 but it uses rather stable modules and libraries. So it should work fine on older versions too.
+It's tested mostly on GNOME version 41 and 42 but it uses rather stable modules and libraries. So it should work fine on older versions too.
 
 ### Install From GNOME Extensions Website
 
 -   You can install the extension directy from [here](https://extensions.gnome.org/extension/4907/easyeffects-preset-selector/).
 -   Alternatively go to [GNOME Extensions Website](https://extensions.gnome.org) and search for EasyEffects Preset Selector
 -   To be able to install extensions from extensions website, you need to have:
+
     1. `chrome-gnome-shell` package (from your package manager) (regardless of what you use as browser firefox or chromium based this package works for all of them)
     2. GNOME Shell Integration add-on for your browser - [for chromium](https://chrome.google.com/webstore/detail/gnome-shell-integration/gphhapmejobijbbhgpjhcjognlahblep) , [for firefox](https://addons.mozilla.org/tr/firefox/addon/gnome-shell-integration/)
 
