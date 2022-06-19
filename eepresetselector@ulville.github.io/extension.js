@@ -29,12 +29,13 @@ const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 const ByteArray = imports.byteArray;
-const Mainloop = imports.mainloop;
 const Config = imports.misc.config;
 
 const _ = ExtensionUtils.gettext;
 const Me = ExtensionUtils.getCurrentExtension();
-const [major, minor] = Config.PACKAGE_VERSION.split(".").map((s) => Number(s));
+// const [major, minor] = Config.PACKAGE_VERSION.split(".").map((s) => Number(s));
+
+let sourceId = null;
 
 const EEPSIndicator = GObject.registerClass(
     class EEPSIndicator extends PanelMenu.Button {
@@ -193,20 +194,22 @@ const EEPSIndicator = GObject.registerClass(
                             new Date().getTime() - this.lastPresetLoadTime;
                         if (timeDiff < 1000) {
                             await new Promise((resolve) => {
-                                if (major >= 42) {
-                                    setTimeout(
-                                        () => resolve(),
-                                        1000 - timeDiff
-                                    );
-                                } else {
-                                    Mainloop.timeout_add(
-                                        1000 - timeDiff,
-                                        () => {
-                                            resolve();
-                                            return GLib.SOURCE_REMOVE;
-                                        }
-                                    );
-                                }
+                                // if (major >= 42) {
+                                //     setTimeout(
+                                //         () => resolve(),
+                                //         1000 - timeDiff
+                                //     );
+                                // } else {
+                                sourceId = GLib.timeout_add(
+                                    GLib.PRIORITY_DEFAULT,
+                                    1000 - timeDiff,
+                                    () => {
+                                        sourceId = null;
+                                        resolve();
+                                        return GLib.SOURCE_REMOVE;
+                                    }
+                                );
+                                // }
                             });
                         }
                         lastPresets = await this.getLastPresets(app_type);
@@ -308,6 +311,10 @@ const EEPSIndicator = GObject.registerClass(
                             "An error occured while trying to get available presets";
                     }
                 } catch (e) {
+                    if (sourceId) {
+                        GLib.Source.remove(sourceId);
+                        sourceId = null;
+                    }
                     Main.notify(_(er_message), _("Error:\n\n" + e));
                     logError(e);
                 }
@@ -444,6 +451,10 @@ class Extension {
     }
 
     disable() {
+        if (sourceId) {
+            GLib.Source.remove(sourceId);
+            sourceId = null;
+        }
         this._indicator.destroy();
         this._indicator = null;
     }
