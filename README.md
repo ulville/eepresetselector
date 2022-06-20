@@ -1,4 +1,4 @@
-<img height="96" src="eepresetselector@ulville.github.io/icons/eepresetselector.svg" align="left"/>
+<img height="128" src="eepresetselector@ulville.github.io/icons/eepresetselector.svg" align="left"/>
 
 # EasyEffects Preset Selector GNOME Extension
 
@@ -8,7 +8,7 @@ A GNOME Shell Extension to quickly show and load EasyEffects Presets from top pa
 
 [EasyEffects](https://github.com/wwmm/easyeffects) (formerly known as PulseEffects) is a GTK4 application to apply multiple filters and audio effects to your audio inputs (microphone) and outputs (speaker, headphone etc.). It lets users to download [community presets](https://github.com/wwmm/easyeffects/wiki/Community-presets) or create their own. Installed presets can be viewed and selected from EasyEffect GUI or using terminal commands.
 
-This GNOME Extension lets users to quickly view and select the preset they want right from the GNOME Shell Status Bar without opening the EasyEffects App or typing commands to the terminal.
+This GNOME Extension lets users to quickly view and select the preset they want right from the GNOME Shell Status Bar without opening the EasyEffects App or typing commands on the terminal.
 
 ![Extension](./screenshots/screenshot.png)
 
@@ -18,14 +18,14 @@ This GNOME Extension lets users to quickly view and select the preset they want 
 
 This Extension depends on EasyEffects to function. It makes use of command-line options `easyeffects -p` and `easyeffects -l`.
 
-~~Flatpak version is not supported for now.~~ Both Flatpak and non-flatpak versions of EasyEffects are supported.
+Both Flatpak and non-flatpak versions of EasyEffects are supported.
 
 It's tested mostly on GNOME version 41 and 42 but it uses rather stable modules and libraries. So it should work fine on older versions too.
 
 ### Install From GNOME Extensions Website
 
--   You can install the extension directy from [here](https://extensions.gnome.org/extension/4907/easyeffects-preset-selector/).
--   Alternatively go to [GNOME Extensions Website](https://extensions.gnome.org) and search for EasyEffects Preset Selector
+[<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" height="128" align="middle">](https://extensions.gnome.org/extension/4907/easyeffects-preset-selector/)
+
 -   To be able to install extensions from extensions website, you need to have:
 
     1. `chrome-gnome-shell` package (from your package manager) (regardless of what you use as browser firefox or chromium based this package works for all of them)
