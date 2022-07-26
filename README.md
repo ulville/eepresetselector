@@ -6,7 +6,7 @@
 
 <h1 align="center">EasyEffects Preset Selector GNOME Extension</h1>
 
-A GNOME Shell Extension to quickly show and load EasyEffects Presets from top panel
+<p align="center">A GNOME Shell Extension to quickly show and load EasyEffects Presets from top panel</p>
 
 ## Overview
 
