@@ -1,6 +1,11 @@
-<img height="128" src="eepresetselector@ulville.github.io/icons/eepresetselector.svg" align="left"/>
+<p>
+<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" height="48">
+</p>
+<p align="center">
+<img height="128" src="eepresetselector@ulville.github.io/icons/eepresetselector.svg"/>
+</p>
 
-# EasyEffects Preset Selector GNOME Extension
+<h1 align="center">EasyEffects Preset Selector GNOME Extension</h1>
 
 A GNOME Shell Extension to quickly show and load EasyEffects Presets from top panel
 
@@ -10,7 +15,9 @@ A GNOME Shell Extension to quickly show and load EasyEffects Presets from top pa
 
 This GNOME Extension lets users to quickly view and select the preset they want right from the GNOME Shell Status Bar without opening the EasyEffects App or typing commands on the terminal.
 
-![Extension](./screenshots/screenshot.png)
+<p align="center">
+    <img src="./screenshots/screenshot.png" alt="Extension">
+</p>
 
 ## Installation
 
@@ -75,4 +82,6 @@ chmod +x install.sh
 
 The extension shows text as parsed from the output of EasyEffects' command-line interface so it already comes in the system language (If supported by EasyEffects).
 
-![When system language set to Turkish](./screenshots/screenshot-turkish.png)
+<p align="center">
+    <img src="./screenshots/screenshot-turkish.png" alt="When system language set to Turkish">
+</p>
