@@ -1,6 +1,5 @@
-<p>
-<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" height="48">
-</p>
+[<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" height="48" align="middle">](https://extensions.gnome.org/extension/4907/easyeffects-preset-selector/)
+
 <p align="center">
 <img height="128" src="eepresetselector@ulville.github.io/icons/eepresetselector.svg"/>
 </p>
