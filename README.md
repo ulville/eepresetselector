@@ -26,8 +26,6 @@ This Extension depends on EasyEffects to function. It makes use of command-line 
 
 Both Flatpak and non-flatpak versions of EasyEffects are supported.
 
-It's tested mostly on GNOME version 41 and 42 but it uses rather stable modules and libraries. So it should work fine on older versions too.
-
 ### Install From GNOME Extensions Website
 
 [<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" height="128" align="middle">](https://extensions.gnome.org/extension/4907/easyeffects-preset-selector/)
