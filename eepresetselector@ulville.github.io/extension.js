@@ -22,7 +22,7 @@
 
 const GETTEXT_DOMAIN = 'eepresetselector@ulville.github.io';
 
-const { GObject, St, GLib, Gio, Shell } = imports.gi;
+const { GObject, St, GLib, Gio, Shell, Clutter } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Main = imports.ui.main;
@@ -93,14 +93,16 @@ const EEPSIndicator = GObject.registerClass(
             });
             // Category Title: "Output Presets" (As how the command did output it)
             if (outputCategoryName) {
-                let _outputTitle = new PopupMenu.PopupImageMenuItem(
-                    `${_(outputCategoryName)}:`,
-                    _('audio-speakers-symbolic')
+                let _outputTitle = new PopupMenu.PopupSeparatorMenuItem(
+                    `${_(outputCategoryName)}:`
                 );
-                _outputTitle.style_class = 'preset-title-item';
-                _outputTitle.connect('activate', () => {
-                    this._refreshMenu();
+                _outputTitle.add_style_class_name('preset-title-item');
+                let _inputIcon = new St.Icon({
+                    style_class: 'popup-menu-icon',
+                    x_align: Clutter.ActorAlign.END,
+                    icon_name: 'audio-speakers-symbolic',
                 });
+                _outputTitle.add_child(_inputIcon);
                 this.menu.addMenuItem(_outputTitle);
             }
 
@@ -116,18 +118,19 @@ const EEPSIndicator = GObject.registerClass(
                 this.menu.addMenuItem(_menuItem);
             });
 
-            this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
             // Category Title: "Input Presets" (As how the command did output it)
             if (inputCategoryName) {
-                let _inputTitle = new PopupMenu.PopupImageMenuItem(
-                    `${_(inputCategoryName)}:`,
-                    _('audio-input-microphone-symbolic')
+                let _inputTitle = new PopupMenu.PopupSeparatorMenuItem(
+                    `${_(inputCategoryName)}:`
                 );
-                _inputTitle.style_class = 'preset-title-item';
-                _inputTitle.connect('activate', () => {
-                    this._refreshMenu();
+                _inputTitle.add_style_class_name('preset-title-item');
+                let _inputIcon = new St.Icon({
+                    style_class: 'popup-menu-icon',
+                    x_align: Clutter.ActorAlign.END,
+                    icon_name: 'audio-input-microphone-symbolic',
                 });
+                _inputTitle.add_child(_inputIcon);
                 this.menu.addMenuItem(_inputTitle);
             }
 
