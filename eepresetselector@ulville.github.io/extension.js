@@ -22,7 +22,7 @@
 
 const GETTEXT_DOMAIN = 'eepresetselector@ulville.github.io';
 
-const { GObject, St, GLib, Gio, Shell, Clutter } = imports.gi;
+const { GObject, St, GLib, Gio, Shell } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Main = imports.ui.main;
@@ -93,58 +93,42 @@ const EEPSIndicator = GObject.registerClass(
             });
             // Category Title: "Output Presets" (As how the command did output it)
             if (outputCategoryName) {
-                let _outputTitle = new PopupMenu.PopupSeparatorMenuItem(
-                    `${_(outputCategoryName)}:`
-                );
-                _outputTitle.add_style_class_name('preset-title-item');
-                let _inputIcon = new St.Icon({
-                    style_class: 'popup-menu-icon',
-                    x_align: Clutter.ActorAlign.END,
-                    icon_name: 'audio-speakers-symbolic',
+                let _outputSubMenuItem = new PopupMenu.PopupSubMenuMenuItem(`${_(outputCategoryName)}:\t${_(lastUsedOutputPreset)}`, true, {});
+                _outputSubMenuItem.icon.icon_name = 'audio-speakers-symbolic';
+
+
+                // Add a menu item to menu for each output preset and connect it to easyeffects' load preset command
+                outputPresets.forEach(element => {
+                    let _menuItem = new PopupMenu.PopupMenuItem(_(element));
+                    if (element === lastUsedOutputPreset)
+                        _menuItem.setOrnament(PopupMenu.Ornament.DOT);
+
+                    _menuItem.connect('activate', () => {
+                        this._loadPreset(element, command);
+                    });
+                    _outputSubMenuItem.menu.addMenuItem(_menuItem);
                 });
-                _outputTitle.add_child(_inputIcon);
-                this.menu.addMenuItem(_outputTitle);
+                this.menu.addMenuItem(_outputSubMenuItem);
             }
-
-            // Add a menu item to menu for each output preset and connect it to easyeffects' load preset command
-            outputPresets.forEach(element => {
-                let _menuItem = new PopupMenu.PopupMenuItem(_(element));
-                if (element === lastUsedOutputPreset)
-                    _menuItem.setOrnament(PopupMenu.Ornament.DOT);
-
-                _menuItem.connect('activate', () => {
-                    this._loadPreset(element, command);
-                });
-                this.menu.addMenuItem(_menuItem);
-            });
-
 
             // Category Title: "Input Presets" (As how the command did output it)
             if (inputCategoryName) {
-                let _inputTitle = new PopupMenu.PopupSeparatorMenuItem(
-                    `${_(inputCategoryName)}:`
-                );
-                _inputTitle.add_style_class_name('preset-title-item');
-                let _inputIcon = new St.Icon({
-                    style_class: 'popup-menu-icon',
-                    x_align: Clutter.ActorAlign.END,
-                    icon_name: 'audio-input-microphone-symbolic',
+                let _inputSubMenuItem = new PopupMenu.PopupSubMenuMenuItem(`${_(inputCategoryName)}:\t${_(lastUsedInputPreset)}`, true, {});
+                _inputSubMenuItem.icon.icon_name = 'audio-input-microphone-symbolic';
+
+                // Add a menu item to menu for each input preset and connect it to easyeffects' load preset command
+                inputPresets.forEach(element => {
+                    let _menuItem = new PopupMenu.PopupMenuItem(_(element));
+                    if (element === lastUsedInputPreset)
+                        _menuItem.setOrnament(PopupMenu.Ornament.DOT);
+
+                    _menuItem.connect('activate', () => {
+                        this._loadPreset(element, command);
+                    });
+                    _inputSubMenuItem.menu.addMenuItem(_menuItem);
                 });
-                _inputTitle.add_child(_inputIcon);
-                this.menu.addMenuItem(_inputTitle);
+                this.menu.addMenuItem(_inputSubMenuItem);
             }
-
-            // Add a menu item to menu for each input preset and connect it to easyeffects' load preset command
-            inputPresets.forEach(element => {
-                let _menuItem = new PopupMenu.PopupMenuItem(_(element));
-                if (element === lastUsedInputPreset)
-                    _menuItem.setOrnament(PopupMenu.Ornament.DOT);
-
-                _menuItem.connect('activate', () => {
-                    this._loadPreset(element, command);
-                });
-                this.menu.addMenuItem(_menuItem);
-            });
         }
 
         async _refreshMenu() {
