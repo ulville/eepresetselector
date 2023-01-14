@@ -2,3 +2,7 @@
 .preset-title-item {
     font-weight: bold;
 }
+
+.scroll-menu-section {
+    max-height: 250px;
+}

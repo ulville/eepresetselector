@@ -105,6 +105,15 @@ const EEPSIndicator = GObject.registerClass(
                 _outputTitle.add_child(_inputIcon);
                 this.menu.addMenuItem(_outputTitle);
             }
+            // Create scrollable MenuSection for Output Presets
+            let _outputScrollSection = new PopupMenu.PopupMenuSection();
+            let _outputScrollView = new St.ScrollView({
+                style_class: 'scroll-menu-section',
+                overlay_scrollbars: true,
+            });
+            let _outputSection = new PopupMenu.PopupMenuSection();
+            _outputScrollView.add_actor(_outputSection.actor);
+            _outputScrollSection.actor.add_actor(_outputScrollView);
 
             // Add a menu item to menu for each output preset and connect it to easyeffects' load preset command
             outputPresets.forEach(element => {
@@ -114,10 +123,12 @@ const EEPSIndicator = GObject.registerClass(
 
                 _menuItem.connect('activate', () => {
                     this._loadPreset(element, command);
+                    this.menu.toggle();
                 });
-                this.menu.addMenuItem(_menuItem);
+                _outputSection.addMenuItem(_menuItem);
             });
 
+            this.menu.addMenuItem(_outputScrollSection);
 
             // Category Title: "Input Presets" (As how the command did output it)
             if (inputCategoryName) {
@@ -134,6 +145,17 @@ const EEPSIndicator = GObject.registerClass(
                 this.menu.addMenuItem(_inputTitle);
             }
 
+            // Create scrollable PopupMenuSection for Input Presets
+            let _inputScrollSection = new PopupMenu.PopupMenuSection();
+            let _inputScrollView = new St.ScrollView({
+                style_class: 'scroll-menu-section',
+                overlay_scrollbars: true,
+            });
+            _inputScrollView.add_style_class_name('scroll-menu-section');
+            let _inputSection = new PopupMenu.PopupMenuSection();
+            _inputScrollView.add_actor(_inputSection.actor);
+            _inputScrollSection.actor.add_actor(_inputScrollView);
+
             // Add a menu item to menu for each input preset and connect it to easyeffects' load preset command
             inputPresets.forEach(element => {
                 let _menuItem = new PopupMenu.PopupMenuItem(_(element));
@@ -142,9 +164,12 @@ const EEPSIndicator = GObject.registerClass(
 
                 _menuItem.connect('activate', () => {
                     this._loadPreset(element, command);
+                    this.menu.toggle();
                 });
-                this.menu.addMenuItem(_menuItem);
+                _inputSection.addMenuItem(_menuItem);
             });
+
+            this.menu.addMenuItem(_inputScrollSection);
         }
 
         async _refreshMenu() {
