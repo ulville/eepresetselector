@@ -108,8 +108,7 @@ const EEPSIndicator = GObject.registerClass(
             // Create scrollable MenuSection for Output Presets
             let _outputScrollSection = new PopupMenu.PopupMenuSection();
             let _outputScrollView = new St.ScrollView({
-                style_class: 'scroll-menu-section',
-                overlay_scrollbars: true,
+                overlay_scrollbars: false,
             });
             let _outputSection = new PopupMenu.PopupMenuSection();
             _outputScrollView.add_actor(_outputSection.actor);
@@ -148,10 +147,8 @@ const EEPSIndicator = GObject.registerClass(
             // Create scrollable PopupMenuSection for Input Presets
             let _inputScrollSection = new PopupMenu.PopupMenuSection();
             let _inputScrollView = new St.ScrollView({
-                style_class: 'scroll-menu-section',
-                overlay_scrollbars: true,
+                overlay_scrollbars: false,
             });
-            _inputScrollView.add_style_class_name('scroll-menu-section');
             let _inputSection = new PopupMenu.PopupMenuSection();
             _inputScrollView.add_actor(_inputSection.actor);
             _inputScrollSection.actor.add_actor(_inputScrollView);
@@ -170,6 +167,25 @@ const EEPSIndicator = GObject.registerClass(
             });
 
             this.menu.addMenuItem(_inputScrollSection);
+
+            // Arrage scrollbar policies
+            let _menuThemeNode = this.menu.actor.get_theme_node();
+            let _maxHeight = _menuThemeNode.get_max_height();
+            let [, _titleNaturalHeight] = this.menu.firstMenuItem.actor.get_preferred_height(-1);
+            let [, _outputNaturalHeight] = _outputSection.actor.get_preferred_height(-1);
+            let [, _inputNaturalHeight] = _inputSection.actor.get_preferred_height(-1);
+
+            let _notFillsScreen = _maxHeight >= 0 && _inputNaturalHeight + _outputNaturalHeight + 2 * _titleNaturalHeight <= _maxHeight;
+            if (_notFillsScreen) {
+                _inputScrollView.vscrollbar_policy = St.PolicyType.NEVER;
+                _outputScrollView.vscrollbar_policy = St.PolicyType.NEVER;
+            } else {
+                let _outputNeedsScrollbar = _maxHeight >= 0 && _outputNaturalHeight + _titleNaturalHeight >= _maxHeight / 2;
+                _outputScrollView.vscrollbar_policy = _outputNeedsScrollbar ? St.PolicyType.AUTOMATIC : St.PolicyType.NEVER;
+
+                let _inputNeedsScrollbar = _maxHeight >= 0 && _inputNaturalHeight + _titleNaturalHeight >= _maxHeight / 2;
+                _inputScrollView.vscrollbar_policy = _inputNeedsScrollbar ? St.PolicyType.AUTOMATIC : St.PolicyType.NEVER;
+            }
         }
 
         async _refreshMenu() {
