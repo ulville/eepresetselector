@@ -78,95 +78,64 @@ const EEPSIndicator = GObject.registerClass(
             }
         }
 
-        _buildMenu(
-            outputCategoryName,
-            inputCategoryName,
-            outputPresets,
-            inputPresets,
-            lastUsedOutputPreset,
-            lastUsedInputPreset,
-            command
-        ) {
+        _addCategoryTitle(categoryName, categoryIconName) {
+            let _title = new PopupMenu.PopupSeparatorMenuItem(
+                `${_(categoryName)}:`
+            );
+            _title.add_style_class_name('preset-title-item');
+            let _icon = new St.Icon({
+                style_class: 'popup-menu-icon',
+                x_align: Clutter.ActorAlign.END,
+                icon_name: categoryIconName,
+            });
+            _title.add_child(_icon);
+            this.menu.addMenuItem(_title);
+        }
+
+        _addScrollMenuSection(scrollView, menuSection, presets, lastUsedPreset, command) {
+            let _scrollSection = new PopupMenu.PopupMenuSection();
+            scrollView.set_overlay_scrollbars(false);
+            scrollView.add_actor(menuSection.actor);
+            _scrollSection.actor.add_actor(scrollView);
+
+            // Add a menu item to menu for each preset and connect it to easyeffects' load preset command
+            presets.forEach(element => {
+                let _menuItem = new PopupMenu.PopupMenuItem(_(element));
+                if (element === lastUsedPreset)
+                    _menuItem.setOrnament(PopupMenu.Ornament.DOT);
+
+                _menuItem.connect('activate', () => {
+                    this._loadPreset(element, command);
+                    this.menu.toggle();
+                });
+                menuSection.addMenuItem(_menuItem);
+            });
+
+            this.menu.addMenuItem(_scrollSection);
+        }
+
+        _buildMenu(outputCategoryName, inputCategoryName, command) {
             // Clear Menu
             this.menu._getMenuItems().forEach(item => {
                 item.destroy();
             });
             // Category Title: "Output Presets" (As how the command did output it)
-            if (outputCategoryName) {
-                let _outputTitle = new PopupMenu.PopupSeparatorMenuItem(
-                    `${_(outputCategoryName)}:`
-                );
-                _outputTitle.add_style_class_name('preset-title-item');
-                let _inputIcon = new St.Icon({
-                    style_class: 'popup-menu-icon',
-                    x_align: Clutter.ActorAlign.END,
-                    icon_name: 'audio-speakers-symbolic',
-                });
-                _outputTitle.add_child(_inputIcon);
-                this.menu.addMenuItem(_outputTitle);
-            }
+            if (outputCategoryName)
+                this._addCategoryTitle(outputCategoryName, 'audio-speakers-symbolic');
+
             // Create scrollable MenuSection for Output Presets
-            let _outputScrollSection = new PopupMenu.PopupMenuSection();
-            let _outputScrollView = new St.ScrollView({
-                overlay_scrollbars: false,
-            });
+            let _outputScrollView = new St.ScrollView();
             let _outputSection = new PopupMenu.PopupMenuSection();
-            _outputScrollView.add_actor(_outputSection.actor);
-            _outputScrollSection.actor.add_actor(_outputScrollView);
-
-            // Add a menu item to menu for each output preset and connect it to easyeffects' load preset command
-            outputPresets.forEach(element => {
-                let _menuItem = new PopupMenu.PopupMenuItem(_(element));
-                if (element === lastUsedOutputPreset)
-                    _menuItem.setOrnament(PopupMenu.Ornament.DOT);
-
-                _menuItem.connect('activate', () => {
-                    this._loadPreset(element, command);
-                    this.menu.toggle();
-                });
-                _outputSection.addMenuItem(_menuItem);
-            });
-
-            this.menu.addMenuItem(_outputScrollSection);
+            this._addScrollMenuSection(_outputScrollView, _outputSection, this.outputPresets, this.lastUsedOutputPreset, command);
 
             // Category Title: "Input Presets" (As how the command did output it)
-            if (inputCategoryName) {
-                let _inputTitle = new PopupMenu.PopupSeparatorMenuItem(
-                    `${_(inputCategoryName)}:`
-                );
-                _inputTitle.add_style_class_name('preset-title-item');
-                let _inputIcon = new St.Icon({
-                    style_class: 'popup-menu-icon',
-                    x_align: Clutter.ActorAlign.END,
-                    icon_name: 'audio-input-microphone-symbolic',
-                });
-                _inputTitle.add_child(_inputIcon);
-                this.menu.addMenuItem(_inputTitle);
-            }
+            if (inputCategoryName)
+                this._addCategoryTitle(inputCategoryName, 'audio-input-microphone-symbolic');
 
             // Create scrollable PopupMenuSection for Input Presets
-            let _inputScrollSection = new PopupMenu.PopupMenuSection();
-            let _inputScrollView = new St.ScrollView({
-                overlay_scrollbars: false,
-            });
+            let _inputScrollView = new St.ScrollView();
             let _inputSection = new PopupMenu.PopupMenuSection();
-            _inputScrollView.add_actor(_inputSection.actor);
-            _inputScrollSection.actor.add_actor(_inputScrollView);
-
-            // Add a menu item to menu for each input preset and connect it to easyeffects' load preset command
-            inputPresets.forEach(element => {
-                let _menuItem = new PopupMenu.PopupMenuItem(_(element));
-                if (element === lastUsedInputPreset)
-                    _menuItem.setOrnament(PopupMenu.Ornament.DOT);
-
-                _menuItem.connect('activate', () => {
-                    this._loadPreset(element, command);
-                    this.menu.toggle();
-                });
-                _inputSection.addMenuItem(_menuItem);
-            });
-
-            this.menu.addMenuItem(_inputScrollSection);
+            this._addScrollMenuSection(_inputScrollView, _inputSection, this.inputPresets, this.lastUsedInputPreset, command);
 
             // Arrage scrollbar policies
             let _menuThemeNode = this.menu.actor.get_theme_node();
@@ -216,15 +185,7 @@ const EEPSIndicator = GObject.registerClass(
                 }
 
                 // Build menu with last values
-                this._buildMenu(
-                    this.categoryNames[0],
-                    this.categoryNames[1],
-                    this.outputPresets,
-                    this.inputPresets,
-                    this.lastUsedOutputPreset,
-                    this.lastUsedInputPreset,
-                    command
-                );
+                this._buildMenu(this.categoryNames[0], this.categoryNames[1], command);
 
                 // Try to get Last used presets
                 let erMessage = 'An error occured while trying to get last presets';
@@ -334,15 +295,7 @@ const EEPSIndicator = GObject.registerClass(
                             logError(new Error(data));
                         }
 
-                        this._buildMenu(
-                            this.categoryNames[0],
-                            this.categoryNames[1],
-                            this.outputPresets,
-                            this.inputPresets,
-                            this.lastUsedOutputPreset,
-                            this.lastUsedInputPreset,
-                            command
-                        );
+                        this._buildMenu(this.categoryNames[0], this.categoryNames[1], command);
                     } finally {
                         erMessage =
                             'An error occured while trying to get available presets';
