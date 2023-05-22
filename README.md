@@ -26,6 +26,20 @@ This Extension depends on EasyEffects to function. It makes use of command-line 
 
 Both Flatpak and non-flatpak versions of EasyEffects are supported.
 
+#### ❗ **Important:**
+
+To fix some of the common problems you might possibly have after installing the extension, **make sure that** you have:
+
+- installed [EasyEffects](https://github.com/wwmm/easyeffects),
+- run EasyEffects app at least once before,
+- Optionally but pragmatically;
+  -  **disabled** the option for EasyEffects to **"Shutdown on Window Closing"**
+  - and **enabled** **"Launch Service at System Startup"** in the EasyEffects' Preferences menu,
+- [installed and/or created some Presets](https://github.com/wwmm/easyeffects/wiki/Community-presets) in the EasyEffects app,
+- loaded a preset at least once **using the EasyEffects app**,
+
+🔄 Also try **rebooting** your system **after a fresh install of EasyEffects** to prevent or fix some possible issues.
+
 ### Install From GNOME Extensions Website
 
 [<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" height="128" align="middle">](https://extensions.gnome.org/extension/4907/easyeffects-preset-selector/)
