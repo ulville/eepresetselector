@@ -69,6 +69,7 @@ const EEPSIndicator = GObject.registerClass(
 
                 if (this.inputPresets.includes(preset))
                     this.lastUsedInputPreset = preset;
+                this._buildMenu(this.categoryNames[0], this.categoryNames[1], commandArr);
             } catch (error) {
                 Main.notify(
                     _('An error occured while trying to load the preset'),
