@@ -72,7 +72,7 @@ const EEPSIndicator = GObject.registerClass(
                 this._buildMenu(this.categoryNames[0], this.categoryNames[1], commandArr);
             } catch (error) {
                 Main.notify(
-                    _('An error occured while trying to load the preset'),
+                    _('An error occurred while trying to load the preset'),
                     _(`Error:\n\n${error}`)
                 );
                 logError(error);
@@ -138,7 +138,7 @@ const EEPSIndicator = GObject.registerClass(
             let _inputSection = new PopupMenu.PopupMenuSection();
             this._addScrollMenuSection(_inputScrollView, _inputSection, this.inputPresets, this.lastUsedInputPreset, command);
 
-            // Arrage scrollbar policies
+            // Arrange scrollbar policies
             let _menuThemeNode = this.menu.actor.get_theme_node();
             let _maxHeight = _menuThemeNode.get_max_height();
             let [, _titleNaturalHeight] = this.menu.firstMenuItem.actor.get_preferred_height(-1);
@@ -189,7 +189,7 @@ const EEPSIndicator = GObject.registerClass(
                 this._buildMenu(this.categoryNames[0], this.categoryNames[1], command);
 
                 // Try to get Last used presets
-                let erMessage = 'An error occured while trying to get last presets';
+                let erMessage = 'An error occurred while trying to get last presets';
                 try {
                     let lastPresets;
                     if (appType === 'flatpak') {
@@ -288,7 +288,7 @@ const EEPSIndicator = GObject.registerClass(
                         } catch (e) {
                             Main.notify(
                                 _(
-                                    'An error occured while trying to get available presets'
+                                    'An error occurred while trying to get available presets'
                                 ),
                                 _(`Error:\n${e}\n\nGot data:\n${data}`)
                             );
@@ -299,7 +299,7 @@ const EEPSIndicator = GObject.registerClass(
                         this._buildMenu(this.categoryNames[0], this.categoryNames[1], command);
                     } finally {
                         erMessage =
-                            'An error occured while trying to get available presets';
+                            'An error occurred while trying to get available presets';
                     }
                 } catch (e) {
                     if (sourceId) {
@@ -406,7 +406,7 @@ const EEPSIndicator = GObject.registerClass(
                         } else if (!stdout && !stderr) {
                             // If there is no stderr and no stdout : there is a problem
                             let customErr = new Error(
-                                'Command ran succesfully but printed nothing'
+                                'Command ran successfully but printed nothing'
                             );
                             reject(customErr);
                         } else {
