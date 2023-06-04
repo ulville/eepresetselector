@@ -22,7 +22,7 @@
 
 const GETTEXT_DOMAIN = 'eepresetselector@ulville.github.io';
 
-const { GObject, St, GLib, Gio, Shell, Clutter } = imports.gi;
+const { GObject, St, GLib, Gio, Shell, Clutter, Meta } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Main = imports.ui.main;
@@ -44,6 +44,21 @@ const EEPSIndicator = GObject.registerClass(
             this.lastUsedInputPreset = ' ';
             this.lastUsedOutputPreset = ' ';
             this.lastPresetLoadTime = 0;
+            this.command = [];
+            this.settings = ExtensionUtils.getSettings();
+
+            Main.wm.addKeybinding(
+                'cycle-output-presets',
+                this.settings,
+                Meta.KeyBindingFlags.IGNORE_AUTOREPEAT,
+                Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW | Shell.ActionMode.POPUP,
+                () => this._loadNext('output'));
+            Main.wm.addKeybinding(
+                'cycle-input-presets',
+                this.settings,
+                Meta.KeyBindingFlags.IGNORE_AUTOREPEAT,
+                Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW | Shell.ActionMode.POPUP,
+                () => this._loadNext('input'));
 
             this._icon = new St.Icon({ style_class: 'system-status-icon' });
             this._icon.gicon = Gio.icon_new_for_string(
@@ -54,6 +69,23 @@ const EEPSIndicator = GObject.registerClass(
                 this._refreshMenu();
             });
             this._refreshMenu();
+        }
+
+        _loadNext(presetType) {
+            let nextPreset;
+            if (presetType === 'output') {
+                const index = this.outputPresets.indexOf(this.lastUsedOutputPreset);
+                const nextIndex = index === this.outputPresets.length - 1 ? 0 : index + 1;
+                nextPreset = this.outputPresets[nextIndex];
+            } else if (presetType === 'input') {
+                const index = this.inputPresets.indexOf(this.lastUsedInputPreset);
+                const nextIndex = index === this.inputPresets.length - 1 ? 0 : index + 1;
+                nextPreset = this.inputPresets[nextIndex];
+            }
+
+            this._loadPreset(nextPreset, this.command);
+            if (!this.menu.isOpen)
+                this.menu.toggle();
         }
 
         _loadPreset(preset, commandArr) {
@@ -175,18 +207,17 @@ const EEPSIndicator = GObject.registerClass(
             } else {
                 let info = app.get_app_info();
                 let filename = info.get_filename();
-                let command;
                 let appType;
                 if (filename.includes('flatpak')) {
                     appType = 'flatpak';
-                    command = ['flatpak', 'run', 'com.github.wwmm.easyeffects'];
+                    this.command = ['flatpak', 'run', 'com.github.wwmm.easyeffects'];
                 } else {
-                    command = ['easyeffects'];
+                    this.command = ['easyeffects'];
                     appType = 'native';
                 }
 
                 // Build menu with last values
-                this._buildMenu(this.categoryNames[0], this.categoryNames[1], command);
+                this._buildMenu(this.categoryNames[0], this.categoryNames[1], this.command);
 
                 // Try to get Last used presets
                 let erMessage = 'An error occurred while trying to get last presets';
@@ -235,14 +266,14 @@ const EEPSIndicator = GObject.registerClass(
                     this.inputPresets = [];
                     try {
                         let data = await this.execCommunicate(
-                            command.concat(['-p'])
+                            this.command.concat(['-p'])
                         );
 
                         for (let n = 0; n < 3; n++) {
                             if (data.includes('**')) {
                                 // eslint-disable-next-line no-await-in-loop
                                 data = await this.execCommunicate(
-                                    command.concat(['-p'])
+                                    this.command.concat(['-p'])
                                 );
                             } else {
                                 break;
@@ -296,7 +327,7 @@ const EEPSIndicator = GObject.registerClass(
                             logError(new Error(data));
                         }
 
-                        this._buildMenu(this.categoryNames[0], this.categoryNames[1], command);
+                        this._buildMenu(this.categoryNames[0], this.categoryNames[1], this.command);
                     } finally {
                         erMessage =
                             'An error occurred while trying to get available presets';
@@ -443,6 +474,8 @@ class Extension {
             GLib.Source.remove(sourceId);
             sourceId = null;
         }
+        Main.wm.removeKeybinding('cycle-output-presets');
+        Main.wm.removeKeybinding('cycle-input-presets');
         this._indicator.destroy();
         this._indicator = null;
     }

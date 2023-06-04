@@ -15,6 +15,7 @@ if [ ! -d $INSTALL_DIR ]; then
 	mkdir $INSTALL_DIR
 fi
 
+./compile-schemas.sh
 echo "Installing extension files into $INSTALL_DIR$EXT_UUID"
 cp -r $EXT_UUID $INSTALL_DIR
 

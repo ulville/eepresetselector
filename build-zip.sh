@@ -3,6 +3,8 @@
 EXT_UUID=eepresetselector@ulville.github.io
 ZIP_FILE=$EXT_UUID.zip
 
+./compile-schemas.sh
+
 if [[ -f "$ZIP_FILE" ]]; then
     echo "$ZIP_FILE already exists. Removing..."
     rm $ZIP_FILE

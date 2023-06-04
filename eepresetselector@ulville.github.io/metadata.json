@@ -11,5 +11,6 @@
     "44"
   ],
   "url": "https://github.com/ulville/eepresetselector",
+  "settings-schema": "org.gnome.shell.extensions.eepresetselector",
   "version": 15
 }

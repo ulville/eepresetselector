@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.eepresetselector" path="/org/gnome/shell/extensions/eepresetselector/">
+    <!-- See also: https://docs.gtk.org/glib/gvariant-format-strings.html -->
+    <key name="cycle-output-presets" type="as">
+      <default><![CDATA[['<Ctrl><Super>o']]]></default>
+      <summary>Cycle through output presets shortcut key</summary>
+      <description>Sets the cycle-output-presets shortcut key.</description>
+    </key>
+    <key name="cycle-input-presets" type="as">
+      <default><![CDATA[['<Ctrl><Super>i']]]></default>
+      <summary>Cycle through input presets shortcut key</summary>
+      <description>Sets the cycle-input-presets shortcut key.</description>
+    </key>
+  </schema>
+</schemalist>
