@@ -83,7 +83,9 @@ const EEPSIndicator = GObject.registerClass(
                 nextPreset = this.inputPresets[nextIndex];
             }
 
-            this._loadPreset(nextPreset, this.command);
+            if (!(nextPreset === undefined))
+                this._loadPreset(nextPreset, this.command);
+
             if (!this.menu.isOpen)
                 this.menu.toggle();
         }
@@ -478,6 +480,7 @@ class Extension {
         Main.wm.removeKeybinding('cycle-input-presets');
         this._indicator.destroy();
         this._indicator = null;
+        this.settings = null;
     }
 }
 
