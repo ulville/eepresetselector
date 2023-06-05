@@ -51,39 +51,26 @@ To fix some of the common problems you might possibly have after installing the 
 
 -   Note: Because of the review process, new versions on the GNOME Extensions Website may lag a few days behind sometimes.
 
-### Manual Installation
 
--   Clone the repository:
+
+### Install Script
+
+1.   Clone the repository:
 
 ```
 git clone https://github.com/ulville/eepresetselector.git
 ```
-
--   Copy `eepresetselector@ulville.github.io` directory to `~/.local/share/gnome-shell/extensions/`
-
-```
-cp -r eepresetselector/eepresetselector@ulville.github.io ~/.local/share/gnome-shell/extensions/
-```
-
--   Log out and login.
--   Enable the extension from GNOME Extensions app.
-
-### Install Script
-
--   Clone the repository as stated above.
--   Run install script:
-
 ```
 cd eepresetselector
 ```
+2.   Run install script:
 
 ```
-chmod +x install.sh
+make
 ```
 
-```
-./install.sh
-```
+3.   Log out and login.
+4.   Enable the extension from GNOME Extensions app.
 
 ### Install Presets
 
