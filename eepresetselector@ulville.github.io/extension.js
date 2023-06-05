@@ -20,7 +20,7 @@
 
 /* exported init */
 
-const GETTEXT_DOMAIN = 'eepresetselector@ulville.github.io';
+const GETTEXT_DOMAIN = 'gnome-shell-extension-eepresetselector';
 
 const { GObject, St, GLib, Gio, Shell, Clutter, Meta } = imports.gi;
 

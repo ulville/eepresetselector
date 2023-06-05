@@ -1,0 +1,87 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-05 22:52+0300\n"
+"PO-Revision-Date: 2023-06-05 04:40+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.3.1\n"
+
+#: extension.js:39
+msgid "EasyEffects Preset Selector"
+msgstr "EasyEffects Ön Ayar Seçici"
+
+#: extension.js:109
+msgid "An error occurred while trying to load the preset"
+msgstr "Ön ayarı yüklemeye çalışırken bir hata meydana geldi"
+
+#: extension.js:205 extension.js:208
+msgid "EasyEffects isn't available on the system"
+msgstr "EasyEffects sistemde mevcut değil"
+
+#: extension.js:206
+msgid "This extension depends on EasyEffects to function"
+msgstr "Bu uzantı çalışmak için EasyEffects'e bağımlıdır"
+
+#: extension.js:324
+msgid "An error occurred while trying to get available presets"
+msgstr "Mevcut ön ayarlar alınmaya çalışılırken bir hata meydana geldi"
+
+#: preferences/prefsPage.js:32
+msgid "Keyboard Shortcuts"
+msgstr "Klavye Kısayolları"
+
+#: preferences/prefsPage.js:40
+msgid "Cycle Output Presets"
+msgstr "Çıkış Ön Ayarlarını Çevir"
+
+#: preferences/prefsPage.js:41
+msgid "Keyboard shortcut to cycle through output presets"
+msgstr "Çıkış ön ayarları arasında dönmek için klavye kısayolu"
+
+#: preferences/prefsPage.js:47
+msgid "Cycle Input Presets"
+msgstr "Giriş Ön Ayarlarını Çevir"
+
+#: preferences/prefsPage.js:48
+msgid "Keyboard shortcut to cycle through input presets"
+msgstr "Giriş ön ayarları arasında dönmek için klavye kısayolu"
+
+#: preferences/prefsPage.js:122
+msgid "New shortcut…"
+msgstr "Yeni kısayol…"
+
+#: preferences/prefsPage.js:154
+msgid "Enter new shortcut…"
+msgstr "Yeni kısayol gir…"
+
+#: preferences/prefsPage.js:155
+msgid "Use Backspace to clear"
+msgstr "Temizlemek için Geri Silmeyi kullan"
+
+#: schemas/org.gnome.shell.extensions.eepresetselector.gschema.xml:7
+#, fuzzy
+msgid "Cycle through output presets shortcut key"
+msgstr "Çıkış ön ayarları arasında dönmek için klavye kısayolu"
+
+#: schemas/org.gnome.shell.extensions.eepresetselector.gschema.xml:8
+msgid "Sets the cycle-output-presets shortcut key."
+msgstr ""
+
+#: schemas/org.gnome.shell.extensions.eepresetselector.gschema.xml:12
+msgid "Cycle through input presets shortcut key"
+msgstr ""
+
+#: schemas/org.gnome.shell.extensions.eepresetselector.gschema.xml:13
+msgid "Sets the cycle-input-presets shortcut key."
+msgstr ""

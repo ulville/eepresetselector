@@ -12,5 +12,6 @@
   ],
   "url": "https://github.com/ulville/eepresetselector",
   "settings-schema": "org.gnome.shell.extensions.eepresetselector",
+  "gettext_domain": "gnome-shell-extension-eepresetselector",
   "version": 15
 }

@@ -1,6 +1,6 @@
 'use strict';
 
-const GETTEXT_DOMAIN = 'eepresetselector@ulville.github.io';
+const GETTEXT_DOMAIN = 'gnome-shell-extension-eepresetselector';
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
