@@ -1,3 +1,5 @@
+/* exported EEPSPreferences */
+
 'use strict';
 
 import * as PrefsPage from './preferences/prefsPage.js';
