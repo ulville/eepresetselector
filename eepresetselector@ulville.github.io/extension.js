@@ -22,7 +22,7 @@
 
 const GETTEXT_DOMAIN = 'gnome-shell-extension-eepresetselector';
 
-const { GObject, St, GLib, Gio, Shell, Clutter, Meta } = imports.gi;
+const {GObject, St, GLib, Gio, Shell, Clutter, Meta} = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Main = imports.ui.main;
@@ -60,7 +60,7 @@ const EEPSIndicator = GObject.registerClass(
                 Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW | Shell.ActionMode.POPUP,
                 () => this._loadNext('input'));
 
-            this._icon = new St.Icon({ style_class: 'system-status-icon' });
+            this._icon = new St.Icon({style_class: 'system-status-icon'});
             this._icon.gicon = Gio.icon_new_for_string(
                 `${Me.path}/icons/eepresetselector-symbolic.svg`
             );
