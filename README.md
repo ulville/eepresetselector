@@ -46,7 +46,7 @@ To fix some of the common problems you might possibly have after installing the 
 
 -   To be able to install extensions from extensions website, you need to have:
 
-    1. `chrome-gnome-shell` package (from your package manager) (regardless of what you use as browser firefox or chromium based this package works for all of them)
+    1. `gnome-browser-connector` package (from your package manager)
     2. GNOME Shell Integration add-on for your browser - [for chromium](https://chrome.google.com/webstore/detail/gnome-shell-integration/gphhapmejobijbbhgpjhcjognlahblep) , [for firefox](https://addons.mozilla.org/tr/firefox/addon/gnome-shell-integration/)
 
 -   Note: Because of the review process, new versions on the GNOME Extensions Website may lag a few days behind sometimes.
