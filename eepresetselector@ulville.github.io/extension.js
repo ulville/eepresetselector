@@ -18,11 +18,7 @@
 
 /* Copyright Ulvican Kahya aka ulville 2022 */
 
-/* exported init */
-
-// const GETTEXT_DOMAIN = 'gnome-shell-extension-eepresetselector';
-
-// const {GObject, St, GLib, Gio, Shell, Clutter, Meta} = imports.gi;
+/* exported EEPSExtension */
 
 import GObject from 'gi://GObject';
 import St from 'gi://St';
@@ -33,14 +29,9 @@ import Clutter from 'gi://Clutter';
 import Meta from 'gi://Meta';
 
 import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
-// const ExtensionUtils = imports.misc.extensionUtils;
-// const Main = imports.ui.main;
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
-// const PanelMenu = imports.ui.panelMenu;
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
-// const PopupMenu = imports.ui.popupMenu;
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
-// const Me = ExtensionUtils.getCurrentExtension();
 
 let sourceId = null;
 
