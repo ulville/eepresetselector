@@ -51,9 +51,16 @@ To fix some of the common problems you might possibly have after installing the 
 
 -   Note: Because of the review process, new versions on the GNOME Extensions Website may lag a few days behind sometimes.
 
+### Versions
 
+Extensions developed for GNOME 45+ is incompatible with older GNOME versions and vice-versa. If you use GNOME Extensions Website or some application like Extension Manager it should install the latest compatible version for your GNOME version. But if you'll install it from source you should pick the one that is compatible with your GNOME version.
 
-### Install Script
+| Branch | Version | Compatible GNOME Version |
+| ------ | ------- | ------------------------ |
+| master | v18     | GNOME 45 +               |
+| legacy | v17     | GNOME 3.38 -> GNOME 45   |  |
+
+### Installation From source
 
 1.   Clone the repository:
 
@@ -63,7 +70,13 @@ git clone https://github.com/ulville/eepresetselector.git
 ```
 cd eepresetselector
 ```
-2.   Run install script:
+2.  If you need a specific version rather than the master branch:
+```
+git checkout <tag-or-branch>
+```
+Replace `<tag-or-branch>` with the version's tag name e.g. `git checkout v17` or a branch name e.g. `git checkout legacy`
+
+3.   Run install script:
 
 ```
 make
