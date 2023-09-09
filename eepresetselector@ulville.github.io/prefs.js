@@ -4,7 +4,7 @@
 
 import * as PrefsPage from './preferences/prefsPage.js';
 
-import {ExtensionPreferences, gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+import {ExtensionPreferences} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
 export default class EEPSPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
