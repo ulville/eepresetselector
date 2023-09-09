@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-05 22:52+0300\n"
+"POT-Creation-Date: 2023-09-09 18:58+0300\n"
 "PO-Revision-Date: 2023-06-05 04:40+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -17,55 +17,55 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.3.1\n"
 
-#: extension.js:39
+#: extension.js:41
 msgid "EasyEffects Preset Selector"
 msgstr "EasyEffects Ön Ayar Seçici"
 
-#: extension.js:109
+#: extension.js:111
 msgid "An error occurred while trying to load the preset"
 msgstr "Ön ayarı yüklemeye çalışırken bir hata meydana geldi"
 
-#: extension.js:205 extension.js:208
+#: extension.js:207 extension.js:210
 msgid "EasyEffects isn't available on the system"
 msgstr "EasyEffects sistemde mevcut değil"
 
-#: extension.js:206
+#: extension.js:208
 msgid "This extension depends on EasyEffects to function"
 msgstr "Bu uzantı çalışmak için EasyEffects'e bağımlıdır"
 
-#: extension.js:324
+#: extension.js:326
 msgid "An error occurred while trying to get available presets"
 msgstr "Mevcut ön ayarlar alınmaya çalışılırken bir hata meydana geldi"
 
-#: preferences/prefsPage.js:32
+#: preferences/prefsPage.js:34
 msgid "Keyboard Shortcuts"
 msgstr "Klavye Kısayolları"
 
-#: preferences/prefsPage.js:40
+#: preferences/prefsPage.js:42
 msgid "Cycle Output Presets"
 msgstr "Çıkış Ön Ayarlarını Çevir"
 
-#: preferences/prefsPage.js:41
+#: preferences/prefsPage.js:43
 msgid "Keyboard shortcut to cycle through output presets"
 msgstr "Çıkış ön ayarları arasında dönmek için klavye kısayolu"
 
-#: preferences/prefsPage.js:47
+#: preferences/prefsPage.js:49
 msgid "Cycle Input Presets"
 msgstr "Giriş Ön Ayarlarını Çevir"
 
-#: preferences/prefsPage.js:48
+#: preferences/prefsPage.js:50
 msgid "Keyboard shortcut to cycle through input presets"
 msgstr "Giriş ön ayarları arasında dönmek için klavye kısayolu"
 
-#: preferences/prefsPage.js:122
+#: preferences/prefsPage.js:124
 msgid "New shortcut…"
 msgstr "Yeni kısayol…"
 
-#: preferences/prefsPage.js:154
+#: preferences/prefsPage.js:156
 msgid "Enter new shortcut…"
 msgstr "Yeni kısayol gir…"
 
-#: preferences/prefsPage.js:155
+#: preferences/prefsPage.js:157
 msgid "Use Backspace to clear"
 msgstr "Temizlemek için Geri Silmeyi kullan"
 

@@ -1,19 +1,22 @@
-uuid = eepresetselector@ulville.github.io
-install_dir = ~/.local/share/gnome-shell/extensions
+BUNDLE_PATH = "eepresetselector@ulville.github.io.zip"
+EXTENSION_DIR = "eepresetselector@ulville.github.io"
 
 all: build install
 
-.PHONY: build install dist
+.PHONY: build install translations
 
 build:
-	./update-locale.sh
-	glib-compile-schemas --strict $(uuid)/schemas
-
-dist: build
-	rm -f $(uuid).zip
-	cd $(uuid) && zip -r ../$(uuid).zip ./* --exclude \*.po
+	rm -f $(BUNDLE_PATH)
+	cd $(EXTENSION_DIR); \
+	gnome-extensions pack --force --podir=locale \
+	                      --extra-source=preferences/ \
+	                      --extra-source=icons/ \
+	                      --extra-source=COPYING; \
+	mv $(EXTENSION_DIR).shell-extension.zip ../$(BUNDLE_PATH)
 
 install:
-	install -d $(install_dir)
-	cp -a $(uuid)/ $(install_dir)/
+	gnome-extensions install $(BUNDLE_PATH) --force
 	@echo "Extension installed. Re-login to start using it"
+
+translations:
+	./update-locale.sh
