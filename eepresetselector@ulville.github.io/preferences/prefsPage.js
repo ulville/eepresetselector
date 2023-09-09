@@ -15,7 +15,7 @@ import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions
 
 const genParam = (type, name, ...dflt) => GObject.ParamSpec[type](name, name, name, GObject.ParamFlags.READWRITE, ...dflt);
 
-var EEPSPrefsPage = GObject.registerClass(
+export var EEPSPrefsPage = GObject.registerClass(
     class EEPSPrefsPage extends Adw.PreferencesPage {
         _init(settings) {
             super._init();
