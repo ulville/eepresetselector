@@ -46,14 +46,21 @@ To fix some of the common problems you might possibly have after installing the 
 
 -   To be able to install extensions from extensions website, you need to have:
 
-    1. `chrome-gnome-shell` package (from your package manager) (regardless of what you use as browser firefox or chromium based this package works for all of them)
+    1. `gnome-browser-connector` package (from your package manager)
     2. GNOME Shell Integration add-on for your browser - [for chromium](https://chrome.google.com/webstore/detail/gnome-shell-integration/gphhapmejobijbbhgpjhcjognlahblep) , [for firefox](https://addons.mozilla.org/tr/firefox/addon/gnome-shell-integration/)
 
 -   Note: Because of the review process, new versions on the GNOME Extensions Website may lag a few days behind sometimes.
 
+### Versions
 
+Extensions developed for GNOME 45+ is incompatible with older GNOME versions and vice-versa. If you use GNOME Extensions Website or some application like Extension Manager it should install the latest compatible version for your GNOME version. But if you'll install it from source you should pick the one that is compatible with your GNOME version.
 
-### Install Script
+| Branch | Version | Compatible GNOME Version |
+| ------ | ------- | ------------------------ |
+| master | v18     | GNOME 45 +               |
+| legacy | v17     | GNOME 3.38 -> GNOME 45   |  |
+
+### Installation From source
 
 1.   Clone the repository:
 
@@ -63,7 +70,13 @@ git clone https://github.com/ulville/eepresetselector.git
 ```
 cd eepresetselector
 ```
-2.   Run install script:
+2.  If you need a specific version rather than the master branch:
+```
+git checkout <tag-or-branch>
+```
+Replace `<tag-or-branch>` with the version's tag name e.g. `git checkout v17` or a branch name e.g. `git checkout legacy`
+
+3.   Run install script:
 
 ```
 make
@@ -78,8 +91,31 @@ make
 
 ## Language Support
 
-The extension shows text as parsed from the output of EasyEffects' command-line interface so it already comes in the system language (If supported by EasyEffects).
+The extension shows 'Output Preset' and 'Input Preset' title names as parsed from the output of EasyEffects' command-line interface so it already comes in the system language (If supported by EasyEffects).
 
 <p align="center">
     <img src="./screenshots/screenshot-turkish.png" alt="When system language set to Turkish">
 </p>
+
+For notifications and preferences we need translations. Available translations are:
+
+- Turkish
+
+## Translators
+
+### To add a new language:
+
+1. Create an up-to-date template file:
+```
+make pot
+```
+2. Open it using your favorite PO editor e.g. "Poedit". Create a translation from it for your language, make your changes and save it as a .po file in `./locale` directory.
+3. Remove the .pot file
+
+### To improve an existing translation
+
+1. Update translatable messages by running
+```
+make translations
+```
+2. Edit the PO file you want to work on using your favorite PO editor and save.

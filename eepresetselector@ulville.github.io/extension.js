@@ -18,24 +18,26 @@
 
 /* Copyright Ulvican Kahya aka ulville 2022 */
 
-/* exported init */
+/* exported EEPSExtension */
 
-const GETTEXT_DOMAIN = 'gnome-shell-extension-eepresetselector';
+import GObject from 'gi://GObject';
+import St from 'gi://St';
+import GLib from 'gi://GLib';
+import Gio from 'gi://Gio';
+import Shell from 'gi://Shell';
+import Clutter from 'gi://Clutter';
+import Meta from 'gi://Meta';
 
-const {GObject, St, GLib, Gio, Shell, Clutter, Meta} = imports.gi;
-
-const ExtensionUtils = imports.misc.extensionUtils;
-const Main = imports.ui.main;
-const PanelMenu = imports.ui.panelMenu;
-const PopupMenu = imports.ui.popupMenu;
-const _ = ExtensionUtils.gettext;
-const Me = ExtensionUtils.getCurrentExtension();
+import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
+import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
 let sourceId = null;
 
 const EEPSIndicator = GObject.registerClass(
     class EEPSIndicator extends PanelMenu.Button {
-        _init() {
+        _init(settings, path) {
             super._init(0.5, _('EasyEffects Preset Selector'));
 
             this.categoryNames = [' ', ' '];
@@ -45,7 +47,7 @@ const EEPSIndicator = GObject.registerClass(
             this.lastUsedOutputPreset = ' ';
             this.lastPresetLoadTime = 0;
             this.command = [];
-            this.settings = ExtensionUtils.getSettings();
+            this.settings = settings;
 
             Main.wm.addKeybinding(
                 'cycle-output-presets',
@@ -62,7 +64,7 @@ const EEPSIndicator = GObject.registerClass(
 
             this._icon = new St.Icon({style_class: 'system-status-icon'});
             this._icon.gicon = Gio.icon_new_for_string(
-                `${Me.path}/icons/eepresetselector-symbolic.svg`
+                `${path}/icons/eepresetselector-symbolic.svg`
             );
             this.add_child(this._icon);
             this.connect('button-press-event', () => {
@@ -459,16 +461,11 @@ const EEPSIndicator = GObject.registerClass(
     }
 );
 
-class Extension {
-    constructor(uuid) {
-        this._uuid = uuid;
-
-        ExtensionUtils.initTranslations(GETTEXT_DOMAIN);
-    }
-
+export default class EEPSExtension extends Extension {
     enable() {
-        this._indicator = new EEPSIndicator();
-        Main.panel.addToStatusArea(this._uuid, this._indicator);
+        this._settings = this.getSettings();
+        this._indicator = new EEPSIndicator(this._settings, this.path);
+        Main.panel.addToStatusArea(this.uuid, this._indicator);
     }
 
     disable() {
@@ -480,11 +477,6 @@ class Extension {
         Main.wm.removeKeybinding('cycle-input-presets');
         this._indicator.destroy();
         this._indicator = null;
-        this.settings = null;
+        this._settings = null;
     }
-}
-
-// eslint-disable-next-line jsdoc/require-jsdoc
-function init(meta) {
-    return new Extension(meta.uuid);
 }
