@@ -20,3 +20,6 @@ install:
 
 translations:
 	./update-locale.sh
+
+pot:
+	./update-locale.sh -a

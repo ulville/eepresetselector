@@ -91,8 +91,31 @@ make
 
 ## Language Support
 
-The extension shows text as parsed from the output of EasyEffects' command-line interface so it already comes in the system language (If supported by EasyEffects).
+The extension shows 'Output Preset' and 'Input Preset' title names as parsed from the output of EasyEffects' command-line interface so it already comes in the system language (If supported by EasyEffects).
 
 <p align="center">
     <img src="./screenshots/screenshot-turkish.png" alt="When system language set to Turkish">
 </p>
+
+For notifications and preferences we need translations. Available translations are:
+
+- Turkish
+
+## Translators
+
+### To add a new language:
+
+1. Create an up-to-date template file:
+```
+make pot
+```
+2. Open it using your favorite PO editor e.g. "Poedit". Create a translation from it for your language, make your changes and save it as a .po file in `./locale` directory.
+3. Remove the .pot file
+
+### To improve an existing translation
+
+1. Update translatable messages by running
+```
+make translations
+```
+2. Edit the PO file you want to work on using your favorite PO editor and save.
