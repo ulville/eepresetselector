@@ -16,7 +16,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-/* Copyright Ulvican Kahya aka ulville 2022 */
+/* Copyright Ulvican Kahya aka ulville 2022-2023 */
 
 /* exported EEPSExtension */
 
