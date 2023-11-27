@@ -27,5 +27,6 @@ pot:
 test:
 	./test-in-nested-session.sh
 
+# https://github.com/swsnr/ego-upload from swsnr
 publish:
 	ego-upload $(BUNDLE_PATH)
