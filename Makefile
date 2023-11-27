@@ -3,7 +3,7 @@ EXTENSION_DIR = "eepresetselector@ulville.github.io"
 
 all: build install
 
-.PHONY: build install translations
+.PHONY: build install translations pot test publish
 
 build:
 	rm -f $(BUNDLE_PATH)
@@ -23,3 +23,9 @@ translations:
 
 pot:
 	./update-locale.sh -a
+
+test:
+	./test-in-nested-session.sh
+
+publish:
+	ego-upload $(BUNDLE_PATH)
