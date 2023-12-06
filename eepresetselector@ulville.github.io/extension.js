@@ -48,6 +48,8 @@ const EEPSIndicator = GObject.registerClass(
             this.lastPresetLoadTime = 0;
             this.command = [];
             this.settings = settings;
+            this.appDesktopFile = 'com.github.wwmm.easyeffects.desktop';
+            this.easyEffectsApp = Shell.AppSystem.get_default().lookup_app(this.appDesktopFile);
 
             Main.wm.addKeybinding(
                 'cycle-output-presets',
@@ -176,22 +178,42 @@ const EEPSIndicator = GObject.registerClass(
             let _inputSection = new PopupMenu.PopupMenuSection();
             this._addScrollMenuSection(_inputScrollView, _inputSection, this.inputPresets, this.lastUsedInputPreset, command);
 
+            let _separatorItem = new PopupMenu.PopupSeparatorMenuItem();
+            this.menu.addMenuItem(_separatorItem);
+
+            // Add a menu item to activate (open) the Easy Effects application
+            // let _easyEffectsActivatorItem = new PopupMenu.PopupImageMenuItem(
+            //     _('Open %s').format(this.easyEffectsApp.get_name()),
+            //     'system-run-symbolic'
+            // );
+            let _easyEffectsActivatorItem = new PopupMenu.PopupMenuItem(
+                _('Open %s').format(this.easyEffectsApp.get_name())
+            );
+            _easyEffectsActivatorItem.setOrnament(PopupMenu.Ornament.NONE);
+            _easyEffectsActivatorItem.connect('activate', () => {
+                Main.overview.hide();
+                this.easyEffectsApp.activate();
+            });
+            this.menu.addMenuItem(_easyEffectsActivatorItem);
+
             // Arrange scrollbar policies
             let _menuThemeNode = this.menu.actor.get_theme_node();
             let _maxHeight = _menuThemeNode.get_max_height();
-            let [, _titleNaturalHeight] = this.menu.firstMenuItem.actor.get_preferred_height(-1);
-            let [, _outputNaturalHeight] = _outputSection.actor.get_preferred_height(-1);
-            let [, _inputNaturalHeight] = _inputSection.actor.get_preferred_height(-1);
+            let [, _titleNaturH] = this.menu.firstMenuItem.actor.get_preferred_height(-1);
+            let [, _outputNaturH] = _outputSection.actor.get_preferred_height(-1);
+            let [, _inputNaturH] = _inputSection.actor.get_preferred_height(-1);
+            let [, _sepNaturH] = _separatorItem.actor.get_preferred_height(-1);
+            let [, _eeActNaturH] = _easyEffectsActivatorItem.actor.get_preferred_height(-1);
 
-            let _notFillsScreen = _maxHeight >= 0 && _inputNaturalHeight + _outputNaturalHeight + 2 * _titleNaturalHeight <= _maxHeight;
+            let _notFillsScreen = _maxHeight >= 0 && _inputNaturH + _outputNaturH + 2 * _titleNaturH <= _maxHeight - _eeActNaturH - _sepNaturH;
             if (_notFillsScreen) {
                 _inputScrollView.vscrollbar_policy = St.PolicyType.NEVER;
                 _outputScrollView.vscrollbar_policy = St.PolicyType.NEVER;
             } else {
-                let _outputNeedsScrollbar = _maxHeight >= 0 && _outputNaturalHeight + _titleNaturalHeight >= _maxHeight / 2;
+                let _outputNeedsScrollbar = _maxHeight >= 0 && _outputNaturH + _titleNaturH >= (_maxHeight - _eeActNaturH - _sepNaturH) / 2;
                 _outputScrollView.vscrollbar_policy = _outputNeedsScrollbar ? St.PolicyType.AUTOMATIC : St.PolicyType.NEVER;
 
-                let _inputNeedsScrollbar = _maxHeight >= 0 && _inputNaturalHeight + _titleNaturalHeight >= _maxHeight / 2;
+                let _inputNeedsScrollbar = _maxHeight >= 0 && _inputNaturH + _titleNaturH >= (_maxHeight - _eeActNaturH - _sepNaturH) / 2;
                 _inputScrollView.vscrollbar_policy = _inputNeedsScrollbar ? St.PolicyType.AUTOMATIC : St.PolicyType.NEVER;
             }
         }
@@ -199,9 +221,9 @@ const EEPSIndicator = GObject.registerClass(
         async _refreshMenu() {
             // Learn if EasyEffects is installed as a Flatpak
             let appSystem = Shell.AppSystem.get_default();
-            let app = appSystem.lookup_app('com.github.wwmm.easyeffects.desktop');
+            this.easyEffectsApp = appSystem.lookup_app(this.appDesktopFile);
 
-            if (!app) {
+            if (!this.easyEffectsApp) {
                 this.menu._getMenuItems().forEach(item => {
                     item.destroy();
                 });
@@ -211,7 +233,7 @@ const EEPSIndicator = GObject.registerClass(
                 );
                 log(_("EasyEffects isn't available on the system"));
             } else {
-                let info = app.get_app_info();
+                let info = this.easyEffectsApp.get_app_info();
                 let filename = info.get_filename();
                 let appType;
                 if (filename.includes('flatpak')) {
