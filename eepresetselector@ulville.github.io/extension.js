@@ -182,14 +182,11 @@ const EEPSIndicator = GObject.registerClass(
             this.menu.addMenuItem(_separatorItem);
 
             // Add a menu item to activate (open) the Easy Effects application
-            // let _easyEffectsActivatorItem = new PopupMenu.PopupImageMenuItem(
-            //     _('Open %s').format(this.easyEffectsApp.get_name()),
-            //     'system-run-symbolic'
-            // );
             let _easyEffectsActivatorItem = new PopupMenu.PopupMenuItem(
-                _('Open %s').format(this.easyEffectsApp.get_name())
+                _('Launch %s').format(this.easyEffectsApp.get_name())
             );
             _easyEffectsActivatorItem.setOrnament(PopupMenu.Ornament.NONE);
+            _easyEffectsActivatorItem.add_style_class_name('easyeffects-activator-item');
             _easyEffectsActivatorItem.connect('activate', () => {
                 Main.overview.hide();
                 this.easyEffectsApp.activate();
