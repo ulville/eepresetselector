@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: EasyEffects Preset Selector\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-07 02:47+0300\n"
-"PO-Revision-Date: 2023-12-07 02:37+0300\n"
+"POT-Creation-Date: 2023-12-07 22:40+0300\n"
+"PO-Revision-Date: 2023-12-07 21:40+0300\n"
 "Last-Translator: Ulvican Kahya (ulville) <ulvicankahya@gmail.com>\n"
 "Language-Team: \n"
 "Language: tr\n"
@@ -25,20 +25,20 @@ msgstr "EasyEffects Ön Ayar Seçici"
 msgid "An error occurred while trying to load the preset"
 msgstr "Ön ayarı yüklemeye çalışırken bir hata meydana geldi"
 
-#: extension.js:190
+#: extension.js:186
 #, javascript-format
-msgid "Open %s"
-msgstr "%s'i Aç"
+msgid "Launch %s"
+msgstr "%s'i Başlat"
 
-#: extension.js:231 extension.js:234
+#: extension.js:228 extension.js:231
 msgid "EasyEffects isn't available on the system"
 msgstr "EasyEffects sistemde mevcut değil"
 
-#: extension.js:232
+#: extension.js:229
 msgid "This extension depends on EasyEffects to function"
 msgstr "Bu uzantı çalışmak için EasyEffects'e bağımlıdır"
 
-#: extension.js:350
+#: extension.js:347
 msgid "An error occurred while trying to get available presets"
 msgstr "Mevcut ön ayarlar alınmaya çalışılırken bir hata meydana geldi"
 
@@ -89,3 +89,7 @@ msgstr "Giriş ön ayarları arasında dönme klavye kısayolu"
 #: schemas/org.gnome.shell.extensions.eepresetselector.gschema.xml:13
 msgid "Sets the cycle-input-presets shortcut key."
 msgstr "Giriş ön ayarlarını çevir kısayolunu ayarlar."
+
+#, javascript-format
+#~ msgid "Open %s"
+#~ msgstr "%s'i Aç"
