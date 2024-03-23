@@ -134,8 +134,13 @@ const EEPSIndicator = GObject.registerClass(
         _addScrollMenuSection(scrollView, menuSection, presets, lastUsedPreset, command) {
             let _scrollSection = new PopupMenu.PopupMenuSection();
             scrollView.set_overlay_scrollbars(false);
-            scrollView.add_actor(menuSection.actor);
-            _scrollSection.actor.add_actor(scrollView);
+            try {
+                scrollView.add_actor(menuSection.actor);
+                _scrollSection.actor.add_actor(scrollView);
+            } catch (e) {
+                scrollView.add_child(menuSection.actor);
+                _scrollSection.actor.add_child(scrollView);
+            }
 
             // Add a menu item to menu for each preset and connect it to easyeffects' load preset command
             presets.forEach(element => {

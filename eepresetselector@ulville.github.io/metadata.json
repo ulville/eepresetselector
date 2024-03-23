@@ -3,7 +3,8 @@
   "description": "Quickly show and load EasyEffects Presets",
   "uuid": "eepresetselector@ulville.github.io",
   "shell-version": [
-    "45"
+    "45",
+    "46"
   ],
   "url": "https://github.com/ulville/eepresetselector",
   "settings-schema": "org.gnome.shell.extensions.eepresetselector",
