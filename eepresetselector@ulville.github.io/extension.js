@@ -148,7 +148,7 @@ const EEPSIndicator = GObject.registerClass(
                 if (element === lastUsedPreset)
                     _menuItem.setOrnament(PopupMenu.Ornament.DOT);
                 else
-                    _menuItem.setOrnament(PopupMenu.Ornament.NONE);
+                    _menuItem.setOrnament(PopupMenu.Ornament.NO_DOT);
 
                 _menuItem.connect('activate', () => {
                     this._loadPreset(element, command);
