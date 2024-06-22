@@ -376,6 +376,44 @@ const EEPSIndicator = GObject.registerClass(
         async getLastPresets(appType) {
             let _lastUsedOutputPreset = '';
             let _lastUsedInputPreset = '';
+            let lastInputKeyName = "last-loaded-input-preset";
+            let lastOutputKeyName = "last-loaded-output-preset";
+            try {
+                // Check if schema keys are valid
+                // Get a list of all keys
+                let keys = [];
+                let lastInputKeyNameFallback = "last-used-input-preset";
+                let lastOutputKeyNameFallback = "last-used-output-preset";
+                if (appType === "flatpak") {
+                    const listKeysCommand = [
+                        "flatpak",
+                        "run",
+                        "--command=/usr/bin/gsettings", // command we want to run instead of easyeffects
+                        "com.github.wwmm.easyeffects", // inside easyeffects' flatpak sandbox
+                        "list-keys", // argument 1
+                        "com.github.wwmm.easyeffects", // argument 2
+                    ];
+                    const listKeyResponse = await this.execCommunicate(listKeysCommand);
+                    // String (values are seperated by new line)
+                    keys = listKeyResponse.trim().split("\n");
+                } else if (appType === "native") {
+                    const settings = new Gio.Settings({
+                        schema_id: 'com.github.wwmm.easyeffects',
+                    });
+                    keys = settings.settings_schema.list_keys();
+                }
+                // If key names are invalid, try fallback
+                if (!(keys.includes(lastInputKeyName) && keys.includes(lastOutputKeyName))) {
+                    if ((keys.includes(lastInputKeyNameFallback) && (keys.includes(lastOutputKeyNameFallback)))) {
+                        lastInputKeyName = lastInputKeyNameFallback;
+                        lastOutputKeyName = lastOutputKeyNameFallback;
+                    } else {
+                        return Promise.reject(new Error("Couldn't find the GSettings schema key for easyeffects last used presets."));
+                    }
+                }
+            } catch (err) {
+                return Promise.reject(err);
+            }
             try {
                 if (appType === 'flatpak') {
                     // Get last used preset from the flatpak's sandbox
@@ -387,26 +425,18 @@ const EEPSIndicator = GObject.registerClass(
                         'get', // argument 1
                         'com.github.wwmm.easyeffects', // argument 2
                     ];
-                    let _odata = await this.execCommunicate(
-                        command.concat(['last-used-output-preset'])
-                    );
+                    let _odata = await this.execCommunicate(command.concat([lastOutputKeyName]));
                     _lastUsedOutputPreset = _odata.trim().slice(1, -1);
 
-                    let _idata = await this.execCommunicate(
-                        command.concat(['last-used-input-preset'])
-                    );
+                    let _idata = await this.execCommunicate(command.concat([lastInputKeyName]));
                     _lastUsedInputPreset = _idata.trim().slice(1, -1);
                 } else if (appType === 'native') {
                     // Get last used presets
                     const settings = new Gio.Settings({
                         schema_id: 'com.github.wwmm.easyeffects',
                     });
-                    _lastUsedOutputPreset = settings.get_string(
-                        'last-used-output-preset'
-                    );
-                    _lastUsedInputPreset = settings.get_string(
-                        'last-used-input-preset'
-                    );
+                    _lastUsedOutputPreset = settings.get_string(lastOutputKeyName);
+                    _lastUsedInputPreset = settings.get_string(lastInputKeyName);
                 }
                 return Promise.resolve([_lastUsedOutputPreset, _lastUsedInputPreset]);
             } catch (error) {
