@@ -402,10 +402,10 @@ const EEPSIndicator = GObject.registerClass(
                         schema_id: 'com.github.wwmm.easyeffects',
                     });
                     _lastUsedOutputPreset = settings.get_string(
-                        'last-used-output-preset'
+                        'last-loaded-output-preset'
                     );
                     _lastUsedInputPreset = settings.get_string(
-                        'last-used-input-preset'
+                        'last-loaded-input-preset'
                     );
                 }
                 return Promise.resolve([_lastUsedOutputPreset, _lastUsedInputPreset]);
