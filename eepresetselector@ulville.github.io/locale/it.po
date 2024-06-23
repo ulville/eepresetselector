@@ -1,0 +1,91 @@
+# Italian Translations of EasyEffects Preset Selector.
+# Copyright (C) 2024 Mirko Girgenti
+# This file is distributed under the same license as the EasyEffects Preset Selector package.
+# Mirko Girgenti, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: EasyEffects Preset Selector\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-03-28 21:05+0100\n"
+"PO-Revision-Date: 2024-03-28 21:24+0100\n"
+"Last-Translator: Mirko Girgenti (bomdia)\n"
+"Language-Team: \n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.2\n"
+
+#: extension.js:41
+msgid "EasyEffects Preset Selector"
+msgstr "Selettore Profili EasyEffects"
+
+#: extension.js:113
+msgid "An error occurred while trying to load the preset"
+msgstr "Errore nel caricamento del profilo"
+
+#: extension.js:191
+#, javascript-format
+msgid "Launch %s"
+msgstr "Avvia %s"
+
+#: extension.js:233 extension.js:236
+msgid "EasyEffects isn't available on the system"
+msgstr "EasyEffects non trovato"
+
+#: extension.js:234
+msgid "This extension depends on EasyEffects to function"
+msgstr "Questa estensione dipende da EasyEffects per funzionare"
+
+#: extension.js:352
+msgid "An error occurred while trying to get available presets"
+msgstr "Errore nel caricare i profili disponibili"
+
+#: preferences/prefsPage.js:34
+msgid "Keyboard Shortcuts"
+msgstr "Scorciatoie da Tastiera"
+
+#: preferences/prefsPage.js:42
+msgid "Cycle Output Presets"
+msgstr "Scorri i Profili di Uscita"
+
+#: preferences/prefsPage.js:43
+msgid "Keyboard shortcut to cycle through output presets"
+msgstr "Scorciatoia da Tastiera per Scorrere i profili di Uscita"
+
+#: preferences/prefsPage.js:49
+msgid "Cycle Input Presets"
+msgstr "Scorri i Profili di Entrata"
+
+#: preferences/prefsPage.js:50
+msgid "Keyboard shortcut to cycle through input presets"
+msgstr "Scorciatoia da Tastiera per Scorrere i profili di Entrata"
+
+#: preferences/prefsPage.js:124
+msgid "New shortcut…"
+msgstr "Nuova Scorciatoia..."
+
+#: preferences/prefsPage.js:156
+msgid "Enter new shortcut…"
+msgstr "Immetti Nuova Scorciatoia..."
+
+#: preferences/prefsPage.js:157
+msgid "Use Backspace to clear"
+msgstr "Usa Backspace per cancellare la scorciatoia"
+
+#: schemas/org.gnome.shell.extensions.eepresetselector.gschema.xml:7
+msgid "Cycle through output presets shortcut key"
+msgstr "Scorciatoia da Tastiera: Scorri i Profili di Uscita"
+
+#: schemas/org.gnome.shell.extensions.eepresetselector.gschema.xml:8
+msgid "Sets the cycle-output-presets shortcut key."
+msgstr "Imposta la Scorciatoia da Tastiera per Scorrere i Profili di Uscita."
+
+#: schemas/org.gnome.shell.extensions.eepresetselector.gschema.xml:12
+msgid "Cycle through input presets shortcut key"
+msgstr "Scorciatoia da Tastiera: Scorri i Profili di Uscita"
+
+#: schemas/org.gnome.shell.extensions.eepresetselector.gschema.xml:13
+msgid "Sets the cycle-input-presets shortcut key."
+msgstr "Imposta la Scorciatoia da Tastiera per Scorrere i Profili di Entrata."
