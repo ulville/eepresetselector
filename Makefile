@@ -16,7 +16,7 @@ build:
 
 install:
 	gnome-extensions install $(BUNDLE_PATH) --force
-	@echo "Extension installed. Re-login to start using it"
+	@./post-install.sh
 
 translations:
 	./update-locale.sh
