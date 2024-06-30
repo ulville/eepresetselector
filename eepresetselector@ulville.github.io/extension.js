@@ -32,8 +32,47 @@ import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/ex
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
+import * as QuickSettings from 'resource:///org/gnome/shell/ui/quickSettings.js';
 
 let sourceId = null;
+
+const EEPSQuickSettingsIndicator = GObject.registerClass(
+    class EEPSQuickSettingsIndicator extends QuickSettings.SystemIndicator {
+        _init(extensionObject) {
+            super._init();
+        }
+    });
+
+const EEPSQuickMenuToggle = GObject.registerClass(
+    class EEPSQuickMenuToggle extends QuickSettings.QuickMenuToggle {
+        _init(extensionObject) {
+            super._init({
+                title: _('Example Title'),
+                subtitle: _('Example Subtitle'),
+                iconName: 'selection-mode-symbolic',
+                toggleMode: true,
+            });
+
+            // Add a header with an icon, title and optional subtitle. This is
+            // recommended for consistency with other quick settings menus.
+            this.menu.setHeader('selection-mode-symbolic', _('Example Title'),
+                _('Optional Subtitle'));
+
+            // Add suffix to the header, to the right of the title.
+            const headerSuffix = new St.Icon({
+                iconName: 'dialog-warning-symbolic',
+            });
+            this.menu.addHeaderSuffix(headerSuffix);
+
+            // Add a section of items to the menu
+            this._itemsSection = new PopupMenu.PopupMenuSection();
+            this._itemsSection.addAction(_('Menu Item 1'),
+                () => console.debug('Menu Item 1 activated!'));
+            this._itemsSection.addAction(_('Menu Item 2'),
+                () => console.debug('Menu Item 2 activated!'));
+            this.menu.addMenuItem(this._itemsSection);
+        }
+    });
 
 const EEPSIndicator = GObject.registerClass(
     class EEPSIndicator extends PanelMenu.Button {
@@ -519,9 +558,13 @@ const EEPSIndicator = GObject.registerClass(
 
 export default class EEPSExtension extends Extension {
     enable() {
-        this._settings = this.getSettings();
-        this._indicator = new EEPSIndicator(this._settings, this.path);
-        Main.panel.addToStatusArea(this.uuid, this._indicator);
+        // this._settings = this.getSettings();
+        // this._indicator = new EEPSIndicator(this._settings, this.path);
+        // Main.panel.addToStatusArea(this.uuid, this._indicator);
+        this._indicator = new EEPSQuickSettingsIndicator(this);
+        this._indicator.quickSettingsItems.push(new EEPSQuickMenuToggle(this));
+
+        Main.panel.statusArea.quickSettings.addExternalIndicator(this._indicator);
     }
 
     disable() {
