@@ -46,6 +46,7 @@ const EEPSIndicator = GObject.registerClass(
             this.lastUsedInputPreset = ' ';
             this.lastUsedOutputPreset = ' ';
             this.lastPresetLoadTime = 0;
+            this.enableBypass = false;
             this.command = [];
             this.settings = settings;
             this.appDesktopFile = 'com.github.wwmm.easyeffects.desktop';
@@ -117,6 +118,21 @@ const EEPSIndicator = GObject.registerClass(
             }
         }
 
+        _enableGlobalBypass(state) {
+            this.enableBypass = state;
+            const bypassOption = state ? "1": "2";
+            const command = this.command.concat(["-b", bypassOption]).join(" ");
+            try {
+                GLib.spawn_command_line_async(command);
+            } catch (error) {
+                Main.notify(
+                    _('An error occurred while trying to toggle bypass'),
+                    _(`Error:\n\n${error}`)
+                );
+                logError(error);
+            }
+        }
+
         _addCategoryTitle(categoryName, categoryIconName) {
             let _title = new PopupMenu.PopupSeparatorMenuItem(
                 `${_(categoryName)}:`
@@ -165,6 +181,12 @@ const EEPSIndicator = GObject.registerClass(
             this.menu._getMenuItems().forEach(item => {
                 item.destroy();
             });
+            // Add switch menu item to toggle global bypass
+            const toggleBypassItem = new PopupMenu.PopupSwitchMenuItem(_("Enable global bypass"), this.enableBypass, {});
+            toggleBypassItem.connect("toggled", (item, state) => {
+                this._enableGlobalBypass(state);
+            })
+            this.menu.addMenuItem(toggleBypassItem);
             // Category Title: "Output Presets" (As how the command did output it)
             if (outputCategoryName)
                 this._addCategoryTitle(outputCategoryName, 'audio-speakers-symbolic');
@@ -370,6 +392,11 @@ const EEPSIndicator = GObject.registerClass(
                     Main.notify(_(erMessage), _(`Error:\n\n${e}`));
                     logError(e);
                 }
+
+                // Get global bypass
+                const bypassResponse = await this.execCommunicate(this.command.concat(["-b", "3"]));
+                const bypassEnabled = (bypassResponse.trim() === "1")
+                this.enableBypass = bypassEnabled;
             }
         }
 
