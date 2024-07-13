@@ -181,12 +181,7 @@ const EEPSIndicator = GObject.registerClass(
             this.menu._getMenuItems().forEach(item => {
                 item.destroy();
             });
-            // Add switch menu item to toggle global bypass
-            const toggleBypassItem = new PopupMenu.PopupSwitchMenuItem(_("Enable global bypass"), this.enableBypass, {});
-            toggleBypassItem.connect("toggled", (item, state) => {
-                this._enableGlobalBypass(state);
-            })
-            this.menu.addMenuItem(toggleBypassItem);
+
             // Category Title: "Output Presets" (As how the command did output it)
             if (outputCategoryName)
                 this._addCategoryTitle(outputCategoryName, 'audio-speakers-symbolic');
@@ -205,8 +200,18 @@ const EEPSIndicator = GObject.registerClass(
             let _inputSection = new PopupMenu.PopupMenuSection();
             this._addScrollMenuSection(_inputScrollView, _inputSection, this.inputPresets, this.lastUsedInputPreset, command);
 
+            // Separator
             let _separatorItem = new PopupMenu.PopupSeparatorMenuItem();
             this.menu.addMenuItem(_separatorItem);
+
+            // Add switch menu item to toggle global bypass
+            const toggleBypassItem = new PopupMenu.PopupSwitchMenuItem(_("Global Bypass"), this.enableBypass, {});
+            toggleBypassItem.setOrnament(PopupMenu.Ornament.NONE);
+            toggleBypassItem.add_style_class_name("bypass-toggle-item");
+            toggleBypassItem.connect("toggled", (item, state) => {
+                this._enableGlobalBypass(state);
+            })
+            this.menu.addMenuItem(toggleBypassItem);
 
             // Add a menu item to activate (open) the Easy Effects application
             let _easyEffectsActivatorItem = new PopupMenu.PopupMenuItem(
