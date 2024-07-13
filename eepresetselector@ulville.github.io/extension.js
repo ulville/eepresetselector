@@ -232,17 +232,18 @@ const EEPSIndicator = GObject.registerClass(
             let [, _outputNaturH] = _outputSection.actor.get_preferred_height(-1);
             let [, _inputNaturH] = _inputSection.actor.get_preferred_height(-1);
             let [, _sepNaturH] = _separatorItem.actor.get_preferred_height(-1);
+            let [, _toggleBypassNaturH] = toggleBypassItem.actor.get_preferred_height(-1);
             let [, _eeActNaturH] = _easyEffectsActivatorItem.actor.get_preferred_height(-1);
 
-            let _notFillsScreen = _maxHeight >= 0 && _inputNaturH + _outputNaturH + 2 * _titleNaturH <= _maxHeight - _eeActNaturH - _sepNaturH;
+            let _notFillsScreen = _maxHeight >= 0 && _inputNaturH + _outputNaturH + 2 * _titleNaturH <= _maxHeight - _eeActNaturH - _sepNaturH - _toggleBypassNaturH;
             if (_notFillsScreen) {
                 _inputScrollView.vscrollbar_policy = St.PolicyType.NEVER;
                 _outputScrollView.vscrollbar_policy = St.PolicyType.NEVER;
             } else {
-                let _outputNeedsScrollbar = _maxHeight >= 0 && _outputNaturH + _titleNaturH >= (_maxHeight - _eeActNaturH - _sepNaturH) / 2;
+                let _outputNeedsScrollbar = _maxHeight >= 0 && _outputNaturH + _titleNaturH >= (_maxHeight - _eeActNaturH - _sepNaturH - _toggleBypassNaturH) / 2;
                 _outputScrollView.vscrollbar_policy = _outputNeedsScrollbar ? St.PolicyType.AUTOMATIC : St.PolicyType.NEVER;
 
-                let _inputNeedsScrollbar = _maxHeight >= 0 && _inputNaturH + _titleNaturH >= (_maxHeight - _eeActNaturH - _sepNaturH) / 2;
+                let _inputNeedsScrollbar = _maxHeight >= 0 && _inputNaturH + _titleNaturH >= (_maxHeight - _eeActNaturH - _sepNaturH - _toggleBypassNaturH) / 2;
                 _inputScrollView.vscrollbar_policy = _inputNeedsScrollbar ? St.PolicyType.AUTOMATIC : St.PolicyType.NEVER;
             }
         }
