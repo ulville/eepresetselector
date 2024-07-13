@@ -271,6 +271,15 @@ const EEPSIndicator = GObject.registerClass(
                 // Build menu with last values
                 this._buildMenu(this.categoryNames[0], this.categoryNames[1], this.command);
 
+                // Get global bypass
+                try {
+                    const bypassResponse = await this.execCommunicate(this.command.concat(["-b", "3"]));
+                    this.enableBypass = (bypassResponse.trim() === "1");
+                } catch (err) {
+                    Main.notify(_("An error occurred while trying to get global bypass"), _(`Error:\n\n${err}`));
+                    logError(err);
+                }
+
                 // Try to get Last used presets
                 let erMessage = 'An error occurred while trying to get last presets';
                 try {
@@ -392,11 +401,6 @@ const EEPSIndicator = GObject.registerClass(
                     Main.notify(_(erMessage), _(`Error:\n\n${e}`));
                     logError(e);
                 }
-
-                // Get global bypass
-                const bypassResponse = await this.execCommunicate(this.command.concat(["-b", "3"]));
-                const bypassEnabled = (bypassResponse.trim() === "1")
-                this.enableBypass = bypassEnabled;
             }
         }
 
