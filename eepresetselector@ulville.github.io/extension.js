@@ -46,6 +46,7 @@ const EEPSIndicator = GObject.registerClass(
             this.lastUsedInputPreset = ' ';
             this.lastUsedOutputPreset = ' ';
             this.lastPresetLoadTime = 0;
+            this.enableBypass = false;
             this.command = [];
             this.settings = settings;
             this.appDesktopFile = 'com.github.wwmm.easyeffects.desktop';
@@ -117,6 +118,21 @@ const EEPSIndicator = GObject.registerClass(
             }
         }
 
+        _enableGlobalBypass(state) {
+            this.enableBypass = state;
+            const bypassOption = state ? '1' : '2';
+            const command = this.command.concat(['-b', bypassOption]).join(' ');
+            try {
+                GLib.spawn_command_line_async(command);
+            } catch (error) {
+                Main.notify(
+                    _('An error occurred while trying to toggle bypass'),
+                    _(`Error:\n\n${error}`)
+                );
+                logError(error);
+            }
+        }
+
         _addCategoryTitle(categoryName, categoryIconName) {
             let _title = new PopupMenu.PopupSeparatorMenuItem(
                 `${_(categoryName)}:`
@@ -165,6 +181,7 @@ const EEPSIndicator = GObject.registerClass(
             this.menu._getMenuItems().forEach(item => {
                 item.destroy();
             });
+
             // Category Title: "Output Presets" (As how the command did output it)
             if (outputCategoryName)
                 this._addCategoryTitle(outputCategoryName, 'audio-speakers-symbolic');
@@ -183,8 +200,18 @@ const EEPSIndicator = GObject.registerClass(
             let _inputSection = new PopupMenu.PopupMenuSection();
             this._addScrollMenuSection(_inputScrollView, _inputSection, this.inputPresets, this.lastUsedInputPreset, command);
 
+            // Separator
             let _separatorItem = new PopupMenu.PopupSeparatorMenuItem();
             this.menu.addMenuItem(_separatorItem);
+
+            // Add switch menu item to toggle global bypass
+            const toggleBypassItem = new PopupMenu.PopupSwitchMenuItem(_('Global Bypass'), this.enableBypass, {});
+            toggleBypassItem.setOrnament(PopupMenu.Ornament.NONE);
+            toggleBypassItem.add_style_class_name('bypass-toggle-item');
+            toggleBypassItem.connect('toggled', (item, state) => {
+                this._enableGlobalBypass(state);
+            });
+            this.menu.addMenuItem(toggleBypassItem);
 
             // Add a menu item to activate (open) the Easy Effects application
             let _easyEffectsActivatorItem = new PopupMenu.PopupMenuItem(
@@ -205,17 +232,18 @@ const EEPSIndicator = GObject.registerClass(
             let [, _outputNaturH] = _outputSection.actor.get_preferred_height(-1);
             let [, _inputNaturH] = _inputSection.actor.get_preferred_height(-1);
             let [, _sepNaturH] = _separatorItem.actor.get_preferred_height(-1);
+            let [, _toggleBypassNaturH] = toggleBypassItem.actor.get_preferred_height(-1);
             let [, _eeActNaturH] = _easyEffectsActivatorItem.actor.get_preferred_height(-1);
 
-            let _notFillsScreen = _maxHeight >= 0 && _inputNaturH + _outputNaturH + 2 * _titleNaturH <= _maxHeight - _eeActNaturH - _sepNaturH;
+            let _notFillsScreen = _maxHeight >= 0 && _inputNaturH + _outputNaturH + 2 * _titleNaturH <= _maxHeight - _eeActNaturH - _sepNaturH - _toggleBypassNaturH;
             if (_notFillsScreen) {
                 _inputScrollView.vscrollbar_policy = St.PolicyType.NEVER;
                 _outputScrollView.vscrollbar_policy = St.PolicyType.NEVER;
             } else {
-                let _outputNeedsScrollbar = _maxHeight >= 0 && _outputNaturH + _titleNaturH >= (_maxHeight - _eeActNaturH - _sepNaturH) / 2;
+                let _outputNeedsScrollbar = _maxHeight >= 0 && _outputNaturH + _titleNaturH >= (_maxHeight - _eeActNaturH - _sepNaturH - _toggleBypassNaturH) / 2;
                 _outputScrollView.vscrollbar_policy = _outputNeedsScrollbar ? St.PolicyType.AUTOMATIC : St.PolicyType.NEVER;
 
-                let _inputNeedsScrollbar = _maxHeight >= 0 && _inputNaturH + _titleNaturH >= (_maxHeight - _eeActNaturH - _sepNaturH) / 2;
+                let _inputNeedsScrollbar = _maxHeight >= 0 && _inputNaturH + _titleNaturH >= (_maxHeight - _eeActNaturH - _sepNaturH - _toggleBypassNaturH) / 2;
                 _inputScrollView.vscrollbar_policy = _inputNeedsScrollbar ? St.PolicyType.AUTOMATIC : St.PolicyType.NEVER;
             }
         }
@@ -248,6 +276,15 @@ const EEPSIndicator = GObject.registerClass(
 
                 // Build menu with last values
                 this._buildMenu(this.categoryNames[0], this.categoryNames[1], this.command);
+
+                // Get global bypass
+                try {
+                    const bypassResponse = await this.execCommunicate(this.command.concat(['-b', '3']));
+                    this.enableBypass = bypassResponse.trim() === '1';
+                } catch (err) {
+                    Main.notify(_('An error occurred while trying to get global bypass'), _(`Error:\n\n${err}`));
+                    logError(err);
+                }
 
                 // Try to get Last used presets
                 let erMessage = 'An error occurred while trying to get last presets';
