@@ -1,7 +1,7 @@
-[<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" height="48" align="middle">](https://extensions.gnome.org/extension/4907/easyeffects-preset-selector/)
+[<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="get-it-on-ego-badge" height="48" align="middle">](https://extensions.gnome.org/extension/4907/easyeffects-preset-selector/)
 
 <p align="center">
-<img height="128" src="eepresetselector@ulville.github.io/icons/eepresetselector.svg"/>
+<img height="128" alt="eepresetselector-logo" src="eepresetselector@ulville.github.io/icons/eepresetselector.svg"/>
 </p>
 
 <h1 align="center">EasyEffects Preset Selector GNOME Extension</h1>
@@ -15,7 +15,7 @@
 This GNOME Extension lets users to quickly view and select the preset they want right from the GNOME Shell Status Bar without opening the EasyEffects App or typing commands on the terminal.
 
 <p align="center">
-    <img src="./screenshots/screenshot.png" alt="Extension">
+    <img src="./screenshots/screenshot.png" alt="Extension screenshot">
 </p>
 
 ## Installation
@@ -33,7 +33,7 @@ To fix some of the common problems you might possibly have after installing the 
 - installed [EasyEffects](https://github.com/wwmm/easyeffects),
 - run EasyEffects app at least once before,
 - Optionally but pragmatically;
-  -  **disabled** the option for EasyEffects to **"Shutdown on Window Closing"**
+  - **disabled** the option for EasyEffects to **"Shutdown on Window Closing"**
   - and **enabled** **"Launch Service at System Startup"** in the EasyEffects' Preferences menu,
 - [installed and/or created some Presets](https://github.com/wwmm/easyeffects/wiki/Community-presets) in the EasyEffects app,
 - loaded a preset at least once **using the EasyEffects app**,
@@ -42,14 +42,14 @@ To fix some of the common problems you might possibly have after installing the 
 
 ### Install From GNOME Extensions Website
 
-[<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" height="128" align="middle">](https://extensions.gnome.org/extension/4907/easyeffects-preset-selector/)
+[<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="get-it-on-ego-badge" height="128" align="middle">](https://extensions.gnome.org/extension/4907/easyeffects-preset-selector/)
 
--   To be able to install extensions from extensions website, you need to have:
+- To be able to install extensions from extensions website, you need to have:
 
     1. `gnome-browser-connector` package (from your package manager)
     2. GNOME Shell Integration add-on for your browser - [for chromium](https://chrome.google.com/webstore/detail/gnome-shell-integration/gphhapmejobijbbhgpjhcjognlahblep) , [for firefox](https://addons.mozilla.org/tr/firefox/addon/gnome-shell-integration/)
 
--   Note: Because of the review process, new versions on the GNOME Extensions Website may lag a few days behind sometimes.
+- Note: Because of the review process, new versions on the GNOME Extensions Website may lag a few days behind sometimes.
 
 ### Versions
 
@@ -62,32 +62,36 @@ Extensions developed for GNOME 45+ is incompatible with older GNOME versions and
 
 ### Installation From source
 
-1.   Clone the repository:
+1. Clone the repository:
 
-```
-git clone https://github.com/ulville/eepresetselector.git
-```
-```
-cd eepresetselector
-```
-2.  If you need a specific version rather than the master branch:
-```
-git checkout <tag-or-branch>
-```
-Replace `<tag-or-branch>` with the version's tag name e.g. `git checkout v17` or a branch name e.g. `git checkout legacy`
+    ```sh
+    git clone https://github.com/ulville/eepresetselector.git
+    ```
 
-3.   Run install script:
+    ```sh
+    cd eepresetselector
+    ```
 
-```
-make
-```
+2. If you need a specific version rather than the master branch:
 
-3.   Log out and login.
-4.   Enable the extension from GNOME Extensions app.
+    ```sh
+    git checkout <tag-or-branch>
+    ```
+
+    Replace `<tag-or-branch>` with the version's tag name e.g. `git checkout v17` or a branch name e.g. `git checkout legacy`
+
+3. Run install script:
+
+    ```sh
+    make
+    ```
+
+4. Log out and login.
+5. Enable the extension from GNOME Extensions app.
 
 ### Install Presets
 
--   You can find all the information [here](https://github.com/wwmm/easyeffects/wiki/Community-presets)
+- You can find all the information [here](https://github.com/wwmm/easyeffects/wiki/Community-presets)
 
 ## Language Support
 
@@ -103,19 +107,49 @@ For notifications and preferences we need translations. Available translations a
 
 ## Translators
 
-### To add a new language:
+### To add a new language
 
 1. Create an up-to-date template file:
-```
-make pot
-```
+
+    ```sh
+    make pot
+    ```
+
 2. Open it using your favorite PO editor e.g. "Poedit". Create a translation from it for your language, make your changes and save it as a .po file in `./locale` directory.
 3. Remove the .pot file
 
 ### To improve an existing translation
 
 1. Update translatable messages by running
-```
-make translations
-```
+
+    ```sh
+    make translations
+    ```
+
 2. Edit the PO file you want to work on using your favorite PO editor and save.
+
+## Contributors
+
+### Coding Style
+
+I use **ESLint 8** and a custom eslint config specifically created for GNOME Shell Extensions. Please use eslint to format your code before committing.
+
+Install eslint to the project directory (this uses `package.json` to install needed eslint version and its dependencies)
+
+```sh
+npm install
+```
+
+To check eslint warnings
+
+```sh
+npx eslint -c .eslintrc.yml <filename.js>
+```
+
+To fix issues automatically
+
+```sh
+npx eslint --fix -c .eslintrc.yml <filename.js>
+```
+
+Or you can integrate eslint with your editor of choice. For VSCode I use the official [ESLint Extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) from Microsoft.
