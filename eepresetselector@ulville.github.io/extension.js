@@ -120,8 +120,8 @@ const EEPSIndicator = GObject.registerClass(
 
         _enableGlobalBypass(state) {
             this.enableBypass = state;
-            const bypassOption = state ? "1": "2";
-            const command = this.command.concat(["-b", bypassOption]).join(" ");
+            const bypassOption = state ? '1' : '2';
+            const command = this.command.concat(['-b', bypassOption]).join(' ');
             try {
                 GLib.spawn_command_line_async(command);
             } catch (error) {
@@ -205,12 +205,12 @@ const EEPSIndicator = GObject.registerClass(
             this.menu.addMenuItem(_separatorItem);
 
             // Add switch menu item to toggle global bypass
-            const toggleBypassItem = new PopupMenu.PopupSwitchMenuItem(_("Global Bypass"), this.enableBypass, {});
+            const toggleBypassItem = new PopupMenu.PopupSwitchMenuItem(_('Global Bypass'), this.enableBypass, {});
             toggleBypassItem.setOrnament(PopupMenu.Ornament.NONE);
-            toggleBypassItem.add_style_class_name("bypass-toggle-item");
-            toggleBypassItem.connect("toggled", (item, state) => {
+            toggleBypassItem.add_style_class_name('bypass-toggle-item');
+            toggleBypassItem.connect('toggled', (item, state) => {
                 this._enableGlobalBypass(state);
-            })
+            });
             this.menu.addMenuItem(toggleBypassItem);
 
             // Add a menu item to activate (open) the Easy Effects application
@@ -279,10 +279,10 @@ const EEPSIndicator = GObject.registerClass(
 
                 // Get global bypass
                 try {
-                    const bypassResponse = await this.execCommunicate(this.command.concat(["-b", "3"]));
-                    this.enableBypass = (bypassResponse.trim() === "1");
+                    const bypassResponse = await this.execCommunicate(this.command.concat(['-b', '3']));
+                    this.enableBypass = bypassResponse.trim() === '1';
                 } catch (err) {
-                    Main.notify(_("An error occurred while trying to get global bypass"), _(`Error:\n\n${err}`));
+                    Main.notify(_('An error occurred while trying to get global bypass'), _(`Error:\n\n${err}`));
                     logError(err);
                 }
 
