@@ -373,6 +373,7 @@ const EEPSIndicator = GObject.registerClass(
                                 ] === ''
                             )
                                 this.outputPresets.pop();
+                            this.outputPresets.sort();
 
                             this.inputPresets = presetsAsText[1]
                                 .trim()
@@ -383,6 +384,7 @@ const EEPSIndicator = GObject.registerClass(
                                 ] === ''
                             )
                                 this.inputPresets.pop();
+                            this.inputPresets.sort();
                         } catch (e) {
                             Main.notify(
                                 _(
