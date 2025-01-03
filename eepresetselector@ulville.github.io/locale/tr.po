@@ -7,40 +7,52 @@ msgid ""
 msgstr ""
 "Project-Id-Version: EasyEffects Preset Selector\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-07 22:40+0300\n"
-"PO-Revision-Date: 2023-12-07 21:40+0300\n"
+"POT-Creation-Date: 2025-01-03 22:41+0300\n"
+"PO-Revision-Date: 2025-01-03 23:05+0300\n"
 "Last-Translator: Ulvican Kahya (ulville) <ulvicankahya@gmail.com>\n"
 "Language-Team: \n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.4.1\n"
+"X-Generator: Poedit 3.5\n"
 
 #: extension.js:41
 msgid "EasyEffects Preset Selector"
 msgstr "EasyEffects Ön Ayar Seçici"
 
-#: extension.js:113
+#: extension.js:114
 msgid "An error occurred while trying to load the preset"
 msgstr "Ön ayarı yüklemeye çalışırken bir hata meydana geldi"
 
-#: extension.js:186
+#: extension.js:129
+msgid "An error occurred while trying to toggle bypass"
+msgstr "Atlatma durumunu değiştirmeye çalışırken bir hata meydana geldi"
+
+#: extension.js:208
+msgid "Global Bypass"
+msgstr "Genel Atlatma"
+
+#: extension.js:218
 #, javascript-format
 msgid "Launch %s"
 msgstr "%s'i Başlat"
 
-#: extension.js:228 extension.js:231
+#: extension.js:261 extension.js:264
 msgid "EasyEffects isn't available on the system"
 msgstr "EasyEffects sistemde mevcut değil"
 
-#: extension.js:229
+#: extension.js:262
 msgid "This extension depends on EasyEffects to function"
 msgstr "Bu uzantı çalışmak için EasyEffects'e bağımlıdır"
 
-#: extension.js:347
+#: extension.js:285
+msgid "An error occurred while trying to get global bypass"
+msgstr "Genel atlatma durumunu almaya çalışırken bir hata meydana geldi"
+
+#: extension.js:391
 msgid "An error occurred while trying to get available presets"
-msgstr "Mevcut ön ayarlar alınmaya çalışılırken bir hata meydana geldi"
+msgstr "Mevcut ön ayarları almaya çalışırken bir hata meydana geldi"
 
 #: preferences/prefsPage.js:34
 msgid "Keyboard Shortcuts"
