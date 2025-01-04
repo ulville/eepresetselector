@@ -12,5 +12,10 @@
       <summary>Cycle through input presets shortcut key</summary>
       <description>Sets the cycle-input-presets shortcut key.</description>
     </key>
+    <key name="toggle-global-bypass" type="as">
+      <default><![CDATA[['<Control><Super>b']]]></default>
+      <summary>Toggle global bypass shortcut key</summary>
+      <description>Sets the shortcut key for toggling global bypass feature.</description>
+    </key>
   </schema>
 </schemalist>

@@ -64,6 +64,12 @@ const EEPSIndicator = GObject.registerClass(
                 Meta.KeyBindingFlags.IGNORE_AUTOREPEAT,
                 Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW | Shell.ActionMode.POPUP,
                 () => this._loadNext('input'));
+            Main.wm.addKeybinding(
+                'toggle-global-bypass',
+                this.settings,
+                Meta.KeyBindingFlags.IGNORE_AUTOREPEAT,
+                Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW | Shell.ActionMode.POPUP,
+                () => this._toggleGlobalBypass());
 
             this._icon = new St.Icon({style_class: 'system-status-icon'});
             this._icon.gicon = Gio.icon_new_for_string(
@@ -74,6 +80,14 @@ const EEPSIndicator = GObject.registerClass(
                 this._refreshMenu();
             });
             this._refreshMenu();
+        }
+
+        async _toggleGlobalBypass() {
+            await this._refreshMenu();
+            this._enableGlobalBypass(!this.enableBypass);
+            await this._refreshMenu();
+            if (!this.menu.isOpen)
+                this.menu.toggle();
         }
 
         _loadNext(presetType) {
@@ -570,6 +584,7 @@ export default class EEPSExtension extends Extension {
         }
         Main.wm.removeKeybinding('cycle-output-presets');
         Main.wm.removeKeybinding('cycle-input-presets');
+        Main.wm.removeKeybinding('toggle-global-bypass');
         this._indicator.destroy();
         this._indicator = null;
         this._settings = null;
