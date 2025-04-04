@@ -447,7 +447,7 @@ const EEPSIndicator = GObject.registerClass(
                         'com.github.wwmm.easyeffects', // argument 2
                     ];
                     const listKeyResponse = await this.execCommunicate(listKeysCommand);
-                    // String (values are seperated by new line)
+                    // String (values are separated by new line)
                     keys = listKeyResponse.trim().split('\n');
                 } else if (appType === 'native') {
                     const settings = new Gio.Settings({
