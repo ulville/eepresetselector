@@ -348,6 +348,45 @@ const EEPSIndicator = GObject.registerClass(
         async getLastPresets(appType) {
             let _lastUsedOutputPreset = '';
             let _lastUsedInputPreset = '';
+            let lastOutputKeyName = 'last-loaded-output-preset';
+            let lastInputKeyName = 'last-loaded-input-preset';
+            try {
+                // Get a list of all keys
+                let keys = [];
+                // These are the keys used by some versions of easyeffects (older versions?)
+                let lastOutputKeyFallback = 'last-used-output-preset';
+                let lastInputKeyFallback = 'last-used-input-preset';
+                if (appType === 'flatpak') {
+                    const listKeysCommand = [
+                        'flatpak',
+                        'run',
+                        '--command=/usr/bin/gsettings', // command we want to run instead of easyeffects
+                        'com.github.wwmm.easyeffects', // inside easyeffects' flatpak sandbox
+                        'list-keys', // argument 1
+                        'com.github.wwmm.easyeffects' // argument 2
+                    ];
+                    const listKeyResponse = await this.execCommunicate(listKeysCommand);
+                    // It's a string with newline-separated values
+                    keys = listKeyResponse.trim().split('\n');
+                } else if (appType === 'native') {
+                    const settings = new Gio.settings({
+                        schema_id: 'com.github.wwmm.easyeffects'	
+                    });
+                    keys = settings.settings_schema.list_keys();
+                }
+
+                // If key names aren't valid, try fallback keys
+                if (!(keys.includes(lastInputKeyName) && keys.includes(lastOutputKeyName))) {
+                    if (keys.includes(lastInputKeyFallback) && keys.includes(lastOutputKeyFallback)) {
+                        lastOutputKeyName = lastOutputKeyFallback;
+                        lastInputKeyName = lastInputKeyFallback;
+                    } else {
+                        return Promise.reject(new Error("Couldn't find the GSettings schema keys for easyeffects last used presets."));
+                    }
+                }
+            } catch (err) {
+                return Promise.reject(err);
+            }
             try {
                 if (appType === 'flatpak') {
                     // Get last used preset from the flatpak's sandbox
@@ -360,12 +399,12 @@ const EEPSIndicator = GObject.registerClass(
                         'com.github.wwmm.easyeffects', // argument 2
                     ];
                     let _odata = await this.execCommunicate(
-                        command.concat(['last-used-output-preset'])
+                        command.concat([lastOutputKeyName])
                     );
                     _lastUsedOutputPreset = _odata.trim().slice(1, -1);
 
                     let _idata = await this.execCommunicate(
-                        command.concat(['last-used-input-preset'])
+                        command.concat([lastInputKeyName])
                     );
                     _lastUsedInputPreset = _idata.trim().slice(1, -1);
                 } else if (appType === 'native') {
