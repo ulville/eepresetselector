@@ -363,14 +363,14 @@ const EEPSIndicator = GObject.registerClass(
                         '--command=/usr/bin/gsettings', // command we want to run instead of easyeffects
                         'com.github.wwmm.easyeffects', // inside easyeffects' flatpak sandbox
                         'list-keys', // argument 1
-                        'com.github.wwmm.easyeffects' // argument 2
+                        'com.github.wwmm.easyeffects', // argument 2
                     ];
                     const listKeyResponse = await this.execCommunicate(listKeysCommand);
                     // It's a string with newline-separated values
                     keys = listKeyResponse.trim().split('\n');
                 } else if (appType === 'native') {
                     const settings = new Gio.settings({
-                        schema_id: 'com.github.wwmm.easyeffects'	
+                        schema_id: 'com.github.wwmm.easyeffects',
                     });
                     keys = settings.settings_schema.list_keys();
                 }
@@ -523,7 +523,7 @@ class Extension {
     }
 }
 
-// eslint-disable-next-line jsdoc/require-jsdoc
+// eslint-disable-next-line jsdoc/require-jsdoc, no-unused-vars
 function init(meta) {
     return new Extension(meta.uuid);
 }
