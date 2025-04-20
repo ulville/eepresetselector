@@ -57,8 +57,8 @@ Extensions developed for GNOME 45+ is incompatible with older GNOME versions and
 
 | Branch | Version | Compatible GNOME Version |
 | ------ | ------- | ------------------------ |
-| master | v21     | GNOME 45 +               |
-| legacy | v17     | GNOME 3.38 ... GNOME 44  |
+| master | v27     | GNOME 45 +               |
+| legacy | v28     | GNOME 3.38 ... GNOME 44  |
 
 ### Installation From source
 
