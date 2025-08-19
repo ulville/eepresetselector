@@ -29,4 +29,4 @@ test:
 
 # https://github.com/swsnr/ego-upload from swsnr
 publish:
-	ego-upload $(BUNDLE_PATH)
+	gnome-extensions upload --accept-tos $(BUNDLE_PATH) || ego-upload $(BUNDLE_PATH)
