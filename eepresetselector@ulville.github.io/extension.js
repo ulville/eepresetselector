@@ -320,7 +320,7 @@ const EEPSIndicator = GObject.registerClass(
                     let lastPresets;
                     if (appType === 'flatpak') {
                         // If Flatpak make sure to wait min 1sec before getting last presets
-                        const waitTimeMs = easyEffectsIsQT ? 15000 : 1000;
+                        const waitTimeMs = easyEffectsIsQT ? 35000 : 1000;
                         let timeDiff = new Date().getTime() - this.lastPresetLoadTime;
                         if (timeDiff < waitTimeMs) {
                             await new Promise(resolve => {
