@@ -288,13 +288,27 @@ const EEPSIndicator = GObject.registerClass(
                     appType = 'native';
                 }
 
+                // Get Easy Effects App Version
+                const appVersionString = await this.execCommunicate(this.command.concat(['-v']));
+                const appVersionArray = appVersionString.split(' ');
+                const appVersion = appVersionArray[appVersionArray.length - 1];
+                const [majorVer, unusedMinorVer, unusedBuildVer] = appVersion.split('.', 3);
+                const easyEffectsIsQT = Number(majorVer) >= 8;
+
                 // Build menu with last values
                 this._buildMenu(this.categoryNames[0], this.categoryNames[1], this.command);
 
                 // Get global bypass
                 try {
-                    const bypassResponse = await this.execCommunicate(this.command.concat(['-b', '3']));
-                    this.enableBypass = bypassResponse.trim() === '1';
+                    if (easyEffectsIsQT) {
+                        // TODO: -b 3 doesn't work. Try local server method
+                        // /run/user/1000/.flatpak/com.github.wwmm.easyeffects/tmp/EasyEffectsServer
+                        // https://github.com/wwmm/easyeffects/issues/4402
+                        this.enableBypass = false;
+                    } else {
+                        const bypassResponse = await this.execCommunicate(this.command.concat(['-b', '3']));
+                        this.enableBypass = bypassResponse.trim() === '1';
+                    }
                 } catch (err) {
                     Main.notify(_('An error occurred while trying to get global bypass'), _(`Error:\n\n${err}`));
                     logError(err);
@@ -306,12 +320,13 @@ const EEPSIndicator = GObject.registerClass(
                     let lastPresets;
                     if (appType === 'flatpak') {
                         // If Flatpak make sure to wait min 1sec before getting last presets
+                        const waitTimeMs = easyEffectsIsQT ? 15000 : 1000;
                         let timeDiff = new Date().getTime() - this.lastPresetLoadTime;
-                        if (timeDiff < 1000) {
+                        if (timeDiff < waitTimeMs) {
                             await new Promise(resolve => {
                                 sourceId = GLib.timeout_add(
                                     GLib.PRIORITY_DEFAULT,
-                                    1000 - timeDiff,
+                                    waitTimeMs - timeDiff,
                                     () => {
                                         sourceId = null;
                                         resolve();
@@ -321,7 +336,7 @@ const EEPSIndicator = GObject.registerClass(
                             });
                         }
                         // Get last used presets
-                        lastPresets = await this.getLastPresets(appType);
+                        lastPresets = await this.getLastPresets(appType, easyEffectsIsQT);
                         // Try 3 more times until getting correct data
                         for (let n = 0; n < 3; n++) {
                             if (
@@ -330,14 +345,14 @@ const EEPSIndicator = GObject.registerClass(
                             ) {
                                 // eslint-disable-next-line no-await-in-loop
                                 lastPresets = await this.getLastPresets(
-                                    appType
+                                    appType, easyEffectsIsQT
                                 );
                             } else {
                                 break;
                             }
                         }
                     } else {
-                        lastPresets = await this.getLastPresets(appType);
+                        lastPresets = await this.getLastPresets(appType, easyEffectsIsQT);
                     }
                     this.lastUsedOutputPreset = lastPresets[0];
                     this.lastUsedInputPreset = lastPresets[1];
@@ -362,53 +377,70 @@ const EEPSIndicator = GObject.registerClass(
                         }
 
                         // Parse Data
-                        let presetCategories = data.split('\n');
-                        if (
-                            presetCategories[presetCategories.length - 1] === ''
-                        )
-                            presetCategories.pop();
+                        if (easyEffectsIsQT) {
+                            let lines = data.split('\n');
+                            this.categoryNames.push(lines.shift().split(':')[0]);
+                            while (!(lines[0] === '')) {
+                                let splittedElement = lines.shift().split('\t');
+                                this.outputPresets.push(splittedElement[splittedElement.length - 1].trim());
+                            }
 
-                        while (presetCategories.length > 2)
-                            presetCategories.shift();
+                            while (lines[0] === '')
+                                lines.shift();
 
-                        let presetsAsText = [];
-                        presetCategories.forEach(element => {
-                            let splittedElement = element.split(':');
-                            this.categoryNames.push(splittedElement[0]);
-                            presetsAsText.push(splittedElement[1]);
-                        });
-                        try {
-                            this.outputPresets = presetsAsText[0]
-                                .trim()
-                                .split(',');
+                            while (lines[lines.length - 1] === '')
+                                lines.pop();
+
+                            this.categoryNames.push(lines.shift().split(':')[0]);
+
+                            while (lines.length > 0) {
+                                let splittedElement = lines.shift().split('\t');
+                                this.inputPresets.push(splittedElement[splittedElement.length - 1].trim());
+                            }
+                            // this.categoryNames.push(lines.splice(lines.indexOf(''), 2)[1]);
+                        } else {
+                            let presetCategories = data.split('\n');
                             if (
-                                this.outputPresets[
-                                    this.outputPresets.length - 1
-                                ] === ''
+                                presetCategories[presetCategories.length - 1] === ''
                             )
-                                this.outputPresets.pop();
-                            this.outputPresets.sort();
+                                presetCategories.pop();
 
-                            this.inputPresets = presetsAsText[1]
-                                .trim()
-                                .split(',');
-                            if (
-                                this.inputPresets[
-                                    this.inputPresets.length - 1
-                                ] === ''
-                            )
-                                this.inputPresets.pop();
-                            this.inputPresets.sort();
-                        } catch (e) {
-                            Main.notify(
-                                _(
-                                    'An error occurred while trying to get available presets'
-                                ),
-                                _(`Error:\n${e}\n\nGot data:\n${data}`)
-                            );
-                            logError(e);
-                            logError(new Error(data));
+                            while (presetCategories.length > 2)
+                                presetCategories.shift();
+
+                            let presetsAsText = [];
+                            presetCategories.forEach(element => {
+                                let splittedElement = element.split(':');
+                                this.categoryNames.push(splittedElement[0]);
+                                presetsAsText.push(splittedElement[1]);
+                            });
+                            try {
+                                this.outputPresets = presetsAsText[0]
+                                    .trim()
+                                    .split(',');
+
+                                this.inputPresets = presetsAsText[1]
+                                    .trim()
+                                    .split(',');
+                            } catch (e) {
+                                Main.notify(
+                                    _(
+                                        'An error occurred while trying to get available presets'
+                                    ),
+                                    _(`Error:\n${e}\n\nGot data:\n${data}`)
+                                );
+                                logError(e);
+                                logError(new Error(data));
+                            }
                         }
+
+                        while (this.outputPresets[this.outputPresets.length - 1] === '')
+                            this.outputPresets.pop();
+                        this.outputPresets.sort();
+
+                        while (this.inputPresets[this.inputPresets.length - 1] === '')
+                            this.inputPresets.pop();
+                        this.inputPresets.sort();
 
                         this._buildMenu(this.categoryNames[0], this.categoryNames[1], this.command);
                     } finally {
@@ -426,9 +458,57 @@ const EEPSIndicator = GObject.registerClass(
             }
         }
 
-        async getLastPresets(appType) {
+        async getLastPresets(appType, easyEffectsIsQT) {
             let _lastUsedOutputPreset = '';
             let _lastUsedInputPreset = '';
+
+
+            try {
+                if (!easyEffectsIsQT) {
+                    let lastInputKeyName;
+                    let lastOutputKeyName;
+                    [lastInputKeyName, lastOutputKeyName] = await this.getLastIOGSettingsKeyNames(appType);
+                    if (appType === 'flatpak') {
+                    // Get last used preset from the flatpak's sandbox
+                        let command = [
+                            'flatpak',
+                            'run',
+                            '--command=/usr/bin/gsettings', // command we want to run instead of easyeffects
+                            'com.github.wwmm.easyeffects', // inside easyeffects' flatpak sandbox
+                            'get', // argument 1
+                            'com.github.wwmm.easyeffects', // argument 2
+                        ];
+                        const _odata = await this.execCommunicate(command.concat([lastOutputKeyName]));
+                        _lastUsedOutputPreset = _odata.trim().slice(1, -1);
+
+                        const _idata = await this.execCommunicate(command.concat([lastInputKeyName]));
+                        _lastUsedInputPreset = _idata.trim().slice(1, -1);
+                    } else if (appType === 'native') {
+                    // Get last used presets
+                        const settings = new Gio.Settings({
+                            schema_id: 'com.github.wwmm.easyeffects',
+                        });
+                        _lastUsedOutputPreset = settings.get_string(lastOutputKeyName);
+                        _lastUsedInputPreset = settings.get_string(lastInputKeyName);
+                    }
+                } else {
+                    // New method: use command --active-preset option
+                    const opt = '--active-preset';
+
+                    const _odata = await this.execCommunicate(this.command.concat([opt, 'output']));
+                    _lastUsedOutputPreset = _odata.trim();
+
+                    const _idata = await this.execCommunicate(this.command.concat([opt, 'input']));
+                    _lastUsedInputPreset = _idata.trim();
+                }
+
+                return Promise.resolve([_lastUsedOutputPreset, _lastUsedInputPreset]);
+            } catch (error) {
+                return Promise.reject(error);
+            }
+        }
+
+        async getLastIOGSettingsKeyNames(appType) {
             let lastInputKeyName = 'last-loaded-input-preset';
             let lastOutputKeyName = 'last-loaded-output-preset';
             try {
@@ -467,34 +547,7 @@ const EEPSIndicator = GObject.registerClass(
             } catch (err) {
                 return Promise.reject(err);
             }
-            try {
-                if (appType === 'flatpak') {
-                    // Get last used preset from the flatpak's sandbox
-                    let command = [
-                        'flatpak',
-                        'run',
-                        '--command=/usr/bin/gsettings', // command we want to run instead of easyeffects
-                        'com.github.wwmm.easyeffects', // inside easyeffects' flatpak sandbox
-                        'get', // argument 1
-                        'com.github.wwmm.easyeffects', // argument 2
-                    ];
-                    let _odata = await this.execCommunicate(command.concat([lastOutputKeyName]));
-                    _lastUsedOutputPreset = _odata.trim().slice(1, -1);
-
-                    let _idata = await this.execCommunicate(command.concat([lastInputKeyName]));
-                    _lastUsedInputPreset = _idata.trim().slice(1, -1);
-                } else if (appType === 'native') {
-                    // Get last used presets
-                    const settings = new Gio.Settings({
-                        schema_id: 'com.github.wwmm.easyeffects',
-                    });
-                    _lastUsedOutputPreset = settings.get_string(lastOutputKeyName);
-                    _lastUsedInputPreset = settings.get_string(lastInputKeyName);
-                }
-                return Promise.resolve([_lastUsedOutputPreset, _lastUsedInputPreset]);
-            } catch (error) {
-                return Promise.reject(error);
-            }
+            return Promise.resolve([lastInputKeyName, lastOutputKeyName]);
         }
 
         // eslint-disable-next-line require-await
