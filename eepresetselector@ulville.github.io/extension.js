@@ -300,15 +300,8 @@ const EEPSIndicator = GObject.registerClass(
 
                 // Get global bypass
                 try {
-                    if (easyEffectsIsQT) {
-                        // TODO: -b 3 doesn't work. Try local server method
-                        // /run/user/1000/.flatpak/com.github.wwmm.easyeffects/tmp/EasyEffectsServer
-                        // https://github.com/wwmm/easyeffects/issues/4402
-                        // For now just remember the value this extension set.
-                    } else {
-                        const bypassResponse = await this.execCommunicate(this.command.concat(['-b', '3']));
-                        this.enableBypass = bypassResponse.trim() === '1';
-                    }
+                    const bypassResponse = await this.execCommunicate(this.command.concat(['-b', '3']));
+                    this.enableBypass = bypassResponse.trim() === '1';
                 } catch (err) {
                     Main.notify(_('An error occurred while trying to get global bypass'), _(`Error:\n\n${err}`));
                     logError(err);
