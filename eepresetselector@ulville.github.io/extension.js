@@ -320,7 +320,7 @@ const EEPSIndicator = GObject.registerClass(
                     let lastPresets;
                     if (appType === 'flatpak') {
                         // If Flatpak make sure to wait min 1sec before getting last presets
-                        const waitTimeMs = easyEffectsIsQT ? 35000 : 1000;
+                        const waitTimeMs = easyEffectsIsQT ? 2000 : 1000;
                         let timeDiff = new Date().getTime() - this.lastPresetLoadTime;
                         if (timeDiff < waitTimeMs) {
                             await new Promise(resolve => {
@@ -492,8 +492,8 @@ const EEPSIndicator = GObject.registerClass(
                         _lastUsedInputPreset = settings.get_string(lastInputKeyName);
                     }
                 } else {
-                    // New method: use command --active-preset option
-                    const opt = '--active-preset';
+                    // New method: use command --last-loaded-preset option
+                    const opt = '--last-loaded-preset';
 
                     const _odata = await this.execCommunicate(this.command.concat([opt, 'output']));
                     _lastUsedOutputPreset = _odata.trim();
