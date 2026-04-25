@@ -587,23 +587,16 @@ const EEPSIndicator = GObject.registerClass(
                                     : GLib.strerror(status),
                             });
                         }
-                        // Command gives output as stderr on some versions of EasyEffects for some reason...
-                        // Looks like it's fixed on never versions. This if-else is for compatibility
-                        // Flatpak version 6.2.3 prints some messages to stdout but data we want is in stderr
-                        if (stdout && !stderr) {
-                            // If there is only stdout but no stderr (for version >= v6.2.4, flatpak or non-flatpak)
-                            resolve(stdout);
-                        } else if (!stdout && !stderr) {
+
+                        if (!stdout && !stderr) {
                             // If there is no stderr and no stdout : there is a problem
                             let customErr = new Error(
                                 'Command ran successfully but printed nothing'
                             );
                             reject(customErr);
-                        } else {
-                            // If there is both stderr and stdout (for flatpak vers. < v6.2.4)
-                            // Or there is no stdout but only stderr (for non-flatpak vers. < v6.2.4)
-                            resolve(stderr);
                         }
+
+                        resolve(stdout);
                     } catch (e) {
                         reject(e);
                     } finally {
