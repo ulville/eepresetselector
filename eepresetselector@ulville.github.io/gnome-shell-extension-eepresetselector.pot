@@ -1,0 +1,91 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-03-28 21:05+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: extension.js:41
+msgid "EasyEffects Preset Selector"
+msgstr ""
+
+#: extension.js:113
+msgid "An error occurred while trying to load the preset"
+msgstr ""
+
+#: extension.js:191
+#, javascript-format
+msgid "Launch %s"
+msgstr ""
+
+#: extension.js:233 extension.js:236
+msgid "EasyEffects isn't available on the system"
+msgstr ""
+
+#: extension.js:234
+msgid "This extension depends on EasyEffects to function"
+msgstr ""
+
+#: extension.js:352
+msgid "An error occurred while trying to get available presets"
+msgstr ""
+
+#: preferences/prefsPage.js:34
+msgid "Keyboard Shortcuts"
+msgstr ""
+
+#: preferences/prefsPage.js:42
+msgid "Cycle Output Presets"
+msgstr ""
+
+#: preferences/prefsPage.js:43
+msgid "Keyboard shortcut to cycle through output presets"
+msgstr ""
+
+#: preferences/prefsPage.js:49
+msgid "Cycle Input Presets"
+msgstr ""
+
+#: preferences/prefsPage.js:50
+msgid "Keyboard shortcut to cycle through input presets"
+msgstr ""
+
+#: preferences/prefsPage.js:124
+msgid "New shortcut…"
+msgstr ""
+
+#: preferences/prefsPage.js:156
+msgid "Enter new shortcut…"
+msgstr ""
+
+#: preferences/prefsPage.js:157
+msgid "Use Backspace to clear"
+msgstr ""
+
+#: schemas/org.gnome.shell.extensions.eepresetselector.gschema.xml:7
+msgid "Cycle through output presets shortcut key"
+msgstr ""
+
+#: schemas/org.gnome.shell.extensions.eepresetselector.gschema.xml:8
+msgid "Sets the cycle-output-presets shortcut key."
+msgstr ""
+
+#: schemas/org.gnome.shell.extensions.eepresetselector.gschema.xml:12
+msgid "Cycle through input presets shortcut key"
+msgstr ""
+
+#: schemas/org.gnome.shell.extensions.eepresetselector.gschema.xml:13
+msgid "Sets the cycle-input-presets shortcut key."
+msgstr ""
